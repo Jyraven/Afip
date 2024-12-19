@@ -42,7 +42,7 @@ if ($_POST) {
             ");
             
             // Si la fiche est ouverte, la date de clôture est NULL, sinon elle est remplie avec la date du jour
-            $clDate = ($status == 2) ? null : date('Y-m-d');
+            $clDate = ($status == 2) ? null : date('d-m-Y');
 
             if (!$stmtFiche->execute([$opDate, $_SESSION['user']['id'], $status, $clDate])) {
                 throw new Exception("Erreur lors de l'insertion de la fiche de frais.");
@@ -62,8 +62,10 @@ if ($_POST) {
                 $montant = $montants[$index];
                 $dateFrais = $datesFrais[$index];
 
+                $montant = floatval(str_replace(',', '.', $montant));
+
                 // Calculer le total pour cette ligne
-                $total = $quantite * $montant;
+                $total = $montant;
 
                 // Gérer le justificatif
                 $justifPath = null;

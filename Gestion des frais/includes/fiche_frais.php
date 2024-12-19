@@ -14,7 +14,23 @@ $user = $_SESSION['user'];
 // Récupérer les types de frais depuis la base de données
 $query = $cnx->query("SELECT id_tf, type FROM type_frais");
 $typeFrais = $query->fetchAll(PDO::FETCH_ASSOC);
+
+// Sauvegarder les données soumises dans la session
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $_SESSION['saved_form'] = $_POST;
+}
+
+// Charger les données sauvegardées, ou initialiser des valeurs par défaut
+$savedForm = $_SESSION['saved_form'] ?? [
+    'op_date' => date('Y-m-d'),
+    'type_frais' => [],
+    'quantite' => [],
+    'montant' => [],
+    'date_frais' => [],
+    'justificatif' => []
+];
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -42,7 +58,10 @@ $typeFrais = $query->fetchAll(PDO::FETCH_ASSOC);
                 <input type="number" name="quantite[]" class="p-2 border border-gray-300 rounded-md w-full" min="0" required>
             </td>
             <td>
-                <input type="number" step="0.01" name="montant[]" class="p-2 border border-gray-300 rounded-md w-full" min="0" required>
+                <div class="flex items-center">
+                    <input type="text" name="montant[]" class="p-2 border border-gray-300 rounded-md w-full" min="0" required>
+                    <span class="ml-2">€</span>
+                </div>
             </td>
             <td>
                 <input type="date" name="date_frais[]" class="p-2 border border-gray-300 rounded-md w-full" required>
@@ -66,7 +85,7 @@ $typeFrais = $query->fetchAll(PDO::FETCH_ASSOC);
 
     // Vérifier les noms de fichiers avant l'envoi du formulaire
     document.addEventListener("DOMContentLoaded", function() {
-        document.querySelector('form').addEventListener('submit', function(event) {
+        document.querySelector('form').addEventListener('submit', function(event){
             const fileInputs = document.querySelectorAll('input[type="file"]');
             
             for (const fileInput of fileInputs) {
@@ -79,7 +98,7 @@ $typeFrais = $query->fetchAll(PDO::FETCH_ASSOC);
                         return; // Arrêter après avoir trouvé un fichier non valide
                     }
                 }
-            }
+            };
         });
     });
     </script>
@@ -99,7 +118,7 @@ $typeFrais = $query->fetchAll(PDO::FETCH_ASSOC);
             <img src="assets/profil.jpg" alt="Profil" class="w-10 h-10 rounded-full border-2 border-white">
         </div>
     </div>
-    <div class="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg mt-10">
+    <div class="w-full max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg mt-10">
         <h1 class="text-2xl font-bold text-gray-700 mb-6">Fiche de frais</h1>
 
         <!-- En-tête utilisateur -->
@@ -121,7 +140,7 @@ $typeFrais = $query->fetchAll(PDO::FETCH_ASSOC);
                     <tr>
                         <th class="border border-gray-300 p-1">Type de frais</th>
                         <th class="border border-gray-300 p-1">Quantité</th>
-                        <th class="border border-gray-300 p-1">Montant</th>
+                        <th class="border border-gray-300 p-1">Total</th>
                         <th class="border border-gray-300 p-1">Date</th>
                         <th class="border border-gray-300 p-5">Justificatif</th>
                     </tr>
@@ -139,7 +158,10 @@ $typeFrais = $query->fetchAll(PDO::FETCH_ASSOC);
                             <input type="number" name="quantite[]" class="p-2 border border-gray-300 rounded-md w-full" min="0" required>
                         </td>
                         <td>
-                            <input type="number" step="0.01" name="montant[]" class="p-2 border border-gray-300 rounded-md w-full" min="0" required>
+                            <div class="flex items-center">
+                                <input type="text" name="montant[]" class="p-2 border border-gray-300 rounded-md w-full" min="0" required>
+                                <span class="ml-2">€</span>
+                            </div>
                         </td>
                         <td>
                             <input type="date" name="date_frais[]" class="p-2 border border-gray-300 rounded-md w-full" required>
