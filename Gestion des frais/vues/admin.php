@@ -26,7 +26,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'Administrateur')
 
         <div class="flex-grow flex justify-center space-x-8">
             <a href="gestion_utilisateurs.php" class="text-white hover:text-gray-300">Gestion des utilisateurs</a>
-            <a href="gestion_fiche.php" class="text-white hover:text-gray-300">Gestion des fiches</a>
+            <a href="../includes/gestion_fiche.php" class="text-white hover:text-gray-300">Gestion des fiches</a>
         </div>
 
         <div class="flex items-center space-x-4">

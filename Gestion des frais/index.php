@@ -19,13 +19,13 @@ if (!isUserLoggedIn()) {
 switch ($_GET['action'] ?? "") {
     case 'delete':
         echo '<h1>Suppression</h1>';
-        require_once('includes/delete.php');
+        require_once('includes/delete_usr.php');
         require_once('includes/select.php');
         break;
     case 'create':
         echo '<h1>Création d\'un utilisateur</h1>';
         require_once('includes/add_users.php');
-        require_once('includes/insert.php');
+        require_once('includes/insert_usr.php');
         require_once('includes/select.php');
         break;
     case 'edit':
@@ -34,7 +34,7 @@ switch ($_GET['action'] ?? "") {
         break;
     case 'update':
         echo '<h1>Utilisateur modifié</h1>';
-        require_once('includes/update.php');
+        require_once('includes/update_usr.php');
         break;
     case 'login':
         require_once('includes/login.php');
@@ -56,7 +56,10 @@ switch ($_GET['action'] ?? "") {
             header("Location: vues/visiteur.php");
             exit();
         }
+    case 'note_frais':
+        require_once('..includes/note_frais.php');
         break;
+    
     default:
         echo '<h1>Accueil</h1>';
         require_once('includes/add_users.php');

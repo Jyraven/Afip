@@ -22,6 +22,7 @@ if ($_POST) {
             $_SESSION['user'] = [
                 'firstname' => $user['user_firstname'],
                 'lastname' => $user['user_lastname'],
+                'id' => $user['id_user'],
                 'role' => $user['role'] // Nom du rôle
             ];
             //Redirection selon le rôle
