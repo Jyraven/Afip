@@ -123,7 +123,6 @@ $search = $cnx->query("
     </div>
 </div>
 
-<!-- Inclusion du script -->
 <script src="../../public/js/modal.js"></script>
 
 </body>

@@ -52,8 +52,6 @@ switch ($_GET['action'] ?? "") {
         }
         
     default:
-        echo '<h1>Accueil</h1>';
-        require_once('views/users/users.php');
         require_once('views/users/gestion_usr.php');
         break;
 }

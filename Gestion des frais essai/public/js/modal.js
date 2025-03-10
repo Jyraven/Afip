@@ -66,9 +66,9 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // =======================
-    // MODALE D'ÉDITION D'UTILISATEUR
-    // =======================
+    // =============================== //
+    // MODALE D'ÉDITION D'UTILISATEUR  //
+    // =============================== //
     const editButtons = document.querySelectorAll(".edit-btn");
     const editUserModal = document.getElementById("editUserModal");
     const editModalContent = document.getElementById("editModalContent");
@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 .then(response => response.text())
                 .then(data => {
                     editModalContent.innerHTML = data;
-                    setupEditForm(); // Initialise la soumission en AJAX
+                    setupEditForm();
                 })
                 .catch(error => console.error("Erreur de chargement:", error));
         });
@@ -126,5 +126,61 @@ document.addEventListener("DOMContentLoaded", function() {
                 .catch(error => console.error("Erreur d'envoi:", error));
             });
         }
+    }
+
+    // ==================================== //
+    // MODALE DE SUPPRESSION D'UTILISATEUR  //
+    // ==================================== //
+    const deleteUserModal = document.getElementById("deleteUserModal");
+    const deleteUserIdInput = document.getElementById("deleteUserId");
+    const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+    const closeDeleteModalBtn = document.getElementById("closeDeleteModalBtn");
+    const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+    const deleteMessage = document.getElementById("deleteMessage");
+
+    // Ouvrir la modale et enregistrer l'ID utilisateur
+    document.addEventListener("click", function(event) {
+        if (event.target.closest(".delete-btn")) { // Vérifie si un bouton "Supprimer" est cliqué
+            const userId = event.target.closest(".delete-btn").getAttribute("data-id");
+            deleteUserIdInput.value = userId;
+            deleteUserModal.classList.remove("hidden");
+        }
+    });
+
+    // Fermer la modale
+    if (closeDeleteModalBtn) {
+        closeDeleteModalBtn.addEventListener("click", function() {
+            deleteUserModal.classList.add("hidden");
+        });
+    }
+
+    if (cancelDeleteBtn) {
+        cancelDeleteBtn.addEventListener("click", function() {
+            deleteUserModal.classList.add("hidden");
+        });
+    }
+
+    // Confirmer la suppression
+    if (confirmDeleteBtn) {
+        confirmDeleteBtn.addEventListener("click", function() {
+            const userId = deleteUserIdInput.value;
+
+            fetch("delete_usr.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `id=${userId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                deleteMessage.innerHTML = `<div class="${data.status === "success" ? "text-green-600" : "text-red-600"}">${data.message}</div>`;
+                if (data.status === "success") {
+                    setTimeout(() => {
+                        deleteUserModal.classList.add("hidden");
+                        location.reload();
+                    }, 1500);
+                }
+            })
+            .catch(error => console.error("Erreur de suppression:", error));
+        });
     }
 });
