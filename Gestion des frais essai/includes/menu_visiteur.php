@@ -1,5 +1,5 @@
 <?php
-// Vérifier si l'utilisateur est connecté et a le rôle "Visiteur"
+
 if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'Visiteur') {
     header('Location: login.php');
     exit();
