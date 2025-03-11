@@ -1,11 +1,20 @@
 <?php
 session_start();
-require_once('pdo/bdd.php');
+require_once('../pdo/bdd.php');
 
 // Vérifier si l'utilisateur est connecté et a le rôle "Visiteur"
 if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'Visiteur') {
     header('Location: login.php'); 
     exit();
+}
+
+// Récupérer les informations de l'utilisateur connecté
+$user = $_SESSION['user'];
+$user_id = $user['id'];
+
+// Vérifier que l'ID utilisateur est bien défini
+if (!$user_id) {
+    die("Erreur : L'identifiant de l'utilisateur n'est pas défini dans la session.");
 }
 
 // Récupérer les fiches créées par l'utilisateur
@@ -34,7 +43,7 @@ $fiches = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <!-- Bandeau supérieur -->
 <div class="bg-blue-600 text-white py-4 px-8 flex justify-between items-center">
     <div>
-        <img src="assets/logo.webp" alt="Logo" class="w-32">
+        <img src="../public/images/logo.webp" alt="Logo" class="w-32">
     </div>
     <div class="flex items-center space-x-4">
         <span class="text-white"><?= $_SESSION['user']['firstname'] . ' ' . $_SESSION['user']['lastname']; ?></span>
@@ -48,7 +57,7 @@ $fiches = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <!-- Bouton pour créer une nouvelle fiche de frais -->
     <div class="flex justify-center mb-6">
-        <a href="fiche_frais.php" class="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition">Créer une nouvelle fiche de frais</a>
+        <a href="../views/fiches/fiche_frais.php" class="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition">Créer une nouvelle fiche de frais</a>
     </div>
 
     <!-- Affichage des fiches de frais -->

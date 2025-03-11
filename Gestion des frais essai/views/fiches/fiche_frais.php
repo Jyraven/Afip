@@ -106,7 +106,7 @@ $savedForm = $_SESSION['saved_form'] ?? [
 <body class="bg-gray-100">
     <div class="bg-blue-600 text-white py-4 px-8 flex justify-between items-center">
         <div>
-            <img src="assets/logo.webp" alt="Logo" class="w-32">
+            <img src="../../public/images/logo.webp" alt="Logo" class="w-32">
         </div>
         <div class="flex-grow flex justify-center space-x-8">
             <a href="../vues/admin.php" class="text-white hover:text-gray-300">Accueil</a>
@@ -178,8 +178,19 @@ $savedForm = $_SESSION['saved_form'] ?? [
             </table>
             <button type="button" onclick="addExpenseRow()" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mb-4">Ajouter une ligne</button>
             <br>
-            <button type="submit" name="submit_fiche" value="open" class="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600">Soumettre</button>
-            <button type="submit" name="submit_fiche" value="close" class="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600">Clôturer</button>
+            <div class="flex justify-between mt-4">
+                <a href="gestion_fiche.php" class="bg-gray-500 text-white px-6 py-2 rounded-md hover:bg-gray-600">
+                    Retour
+                </a>
+                <div class="flex space-x-4">
+                    <button type="submit" name="submit_fiche" value="open" class="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600">
+                        Soumettre
+                    </button>
+                    <button type="submit" name="submit_fiche" value="close" class="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600">
+                        Clôturer
+                    </button>
+                </div>
+            </div>
         </form>
     </div>
 </body>

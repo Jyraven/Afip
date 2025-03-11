@@ -74,7 +74,7 @@ $totalPages = ceil($totalFiches / $limit);
 
 <div class="bg-blue-600 text-white py-4 px-8 flex justify-between items-center">
     <div>
-        <img src="assets/logo.webp" alt="Logo" class="w-32">
+        <img src="../../public/images/logo.webp" alt="Logo" class="w-32">
     </div>
     <div class="flex-grow flex justify-center space-x-8">
         <a href="../../vues/admin.php" class="text-white hover:text-gray-300">Accueil</a>
