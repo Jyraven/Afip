@@ -108,11 +108,7 @@ $savedForm = $_SESSION['saved_form'] ?? [
         <div>
             <img src="../../public/images/logo.webp" alt="Logo" class="w-32">
         </div>
-        <div class="flex-grow flex justify-center space-x-8">
-            <a href="../vues/admin.php" class="text-white hover:text-gray-300">Accueil</a>
-            <a href="gestion_fiche.php" class="text-white hover:text-gray-300">Gestion des fiches</a>
-            <a href="gestion_utilisateurs.php" class="text-white hover:text-gray-300">Gestion des utilisateurs</a>
-        </div>
+
         <div class="flex items-center space-x-4">
             <span class="text-white"><?= htmlspecialchars($_SESSION['user']['firstname'] . ' ' . $_SESSION['user']['lastname']); ?></span>
             <img src="assets/profil.jpg" alt="Profil" class="w-10 h-10 rounded-full border-2 border-white">
