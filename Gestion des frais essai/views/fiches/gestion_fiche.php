@@ -31,45 +31,64 @@ $sql = "SELECT f.*, u.user_firstname, u.user_lastname, s.name_status as status
         LEFT JOIN status_fiche s ON f.status_id = s.status_id
         WHERE 1=1";
 
-// Si l'utilisateur est un visiteur, il ne peut voir que ses fiches
+// 🔹 Si l'utilisateur est un visiteur, il ne voit que ses fiches
 if ($user_role === 'Visiteur') {
     $sql .= " AND f.id_users = :user_id";
 }
 
-// Ajout des filtres supplémentaires
+// 🔹 Ajout des filtres
 if (!empty($status)) {
     $sql .= " AND s.name_status = :status";
 }
 if (!empty($search)) {
     $sql .= " AND (u.user_firstname LIKE :search OR u.user_lastname LIKE :search OR f.id_fiches LIKE :search)";
 }
+
+// 🔹 Ajout de l'ordre et de la pagination
 $sql .= " ORDER BY $sortBy $order LIMIT :limit OFFSET :offset";
 
 // Exécution de la requête
 $stmt = $cnx->prepare($sql);
-if ($user_role === 'Visiteur') $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
-if (!empty($status)) $stmt->bindValue(':status', $status, PDO::PARAM_STR);
-if (!empty($search)) $stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
+if ($user_role === 'Visiteur') {
+    $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+}
+if (!empty($status)) {
+    $stmt->bindValue(':status', $status, PDO::PARAM_STR);
+}
+if (!empty($search)) {
+    $stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
+}
 $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
 $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $fiches = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Compter le nombre total de fiches
+// 🔹 Compter le nombre total de fiches
 $countSql = "SELECT COUNT(*) FROM fiches f 
              LEFT JOIN users u ON f.id_users = u.id_user 
              LEFT JOIN status_fiche s ON f.status_id = s.status_id
              WHERE 1=1";
+
 if ($user_role === 'Visiteur') {
     $countSql .= " AND f.id_users = :user_id";
 }
-if (!empty($status)) $countSql .= " AND s.name_status = :status";
-if (!empty($search)) $countSql .= " AND (u.user_firstname LIKE :search OR u.user_lastname LIKE :search OR f.id_fiches LIKE :search)";
+if (!empty($status)) {
+    $countSql .= " AND s.name_status = :status";
+}
+if (!empty($search)) {
+    $countSql .= " AND (u.user_firstname LIKE :search OR u.user_lastname LIKE :search OR f.id_fiches LIKE :search)";
+}
 
 $countStmt = $cnx->prepare($countSql);
-if ($user_role === 'Visiteur') $countStmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
-if (!empty($status)) $countStmt->bindValue(':status', $status, PDO::PARAM_STR);
-if (!empty($search)) $countStmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
+if ($user_role === 'Visiteur') {
+    $countStmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+}
+if (!empty($status)) {
+    $countStmt->bindValue(':status', $status, PDO::PARAM_STR);
+}
+if (!empty($search)) {
+    $countStmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
+}
 $countStmt->execute();
 $totalFiches = $countStmt->fetchColumn();
 $totalPages = ceil($totalFiches / $limit);
@@ -150,19 +169,34 @@ $totalPages = ceil($totalFiches / $limit);
                         <td class="border p-2"><?= htmlspecialchars($fiche['user_firstname'] . ' ' . $fiche['user_lastname']) ?></td>
                         <td class="border p-2"><?= $fiche['op_date'] ?></td>
                         <td class="border p-2"><?= $fiche['cl_date'] ?: 'Non clôturé' ?></td>
-                        <td class="border p-2"><?= isset($fiche['status']) ? htmlspecialchars($fiche['status']) : 'Non défini' ?></td>
-                        <td class="border p-2 flex justify-center space-x-2">
-                            <a href="edit_fiche.php?id=<?= $fiche['id_fiches'] ?>" class="text-blue-600 font-bold" title="Éditer">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                            <a href="delete_fiche.php?id=<?= $fiche['id_fiches'] ?>" class="text-red-600 font-bold" title="Supprimer">
-                                <i class="fas fa-times"></i>
-                            </a>
+                        <td class="border p-2"><?= htmlspecialchars($fiche['status']) ?></td>
+                        <td class="border p-2 text-center">
+                            <div class="flex justify-center space-x-4">
+                                <!-- Bouton Voir -->
+                                <a href="edit_fiche.php?id=<?= $fiche['id_fiches'] ?>" 
+                                class="text-blue-600 hover:text-blue-800 text-xl transition" 
+                                title="Voir">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <!-- Bouton Supprimer -->
+                                <a href="delete_fiche.php?id=<?= $fiche['id_fiches'] ?>" 
+                                class="text-red-600 hover:text-red-800 text-xl transition" 
+                                title="Supprimer">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
+
+        <div class="mt-4 flex justify-center">
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <a href="?page=<?= $i ?>" class="px-4 py-2 <?= $i == $page ? 'bg-blue-600 text-white' : 'bg-gray-200' ?> rounded"><?= $i ?></a>
+            <?php endfor; ?>
+        </div>
     </div>
+
 </body>
 </html>

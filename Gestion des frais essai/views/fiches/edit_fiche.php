@@ -167,8 +167,17 @@ $isOuverte = $fiche['status'] === 'Ouverte';
         </form>
 
         <div class="absolute bottom-6 right-6">
-            <a href="gestion_fiche.php" class="bg-gray-500 text-white px-4 py-2 rounded-md">Retour à la gestion des fiches</a>
+            <?php if ($_SESSION['user']['role'] === 'Comptable'): ?>
+                <a href="../../vues/comptable.php" class="bg-gray-500 text-white px-4 py-2 rounded-md">
+                    Retour
+                </a>
+            <?php else: ?>
+                <a href="gestion_fiche.php" class="bg-gray-500 text-white px-4 py-2 rounded-md">
+                    Retour à la gestion des fiches
+                </a>
+            <?php endif; ?>
         </div>
+
     </div>
 
     <script>
