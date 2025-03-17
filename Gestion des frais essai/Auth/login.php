@@ -55,7 +55,7 @@ if ($_POST) {
     <link href="public/css/style.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="flex items-center justify-center min-h-screen login-page">  <!-- Ajoutez ici 'login-page' -->
+<body class="flex items-center justify-center min-h-screen login-page">
     <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
         <img src="public/images/logo.webp" alt="Logo" class="w-52 mx-auto mb-6">
         <h2 class="text-2xl text-center text-blue-600 font-semibold mb-6">Connexion</h2>

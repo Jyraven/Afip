@@ -55,19 +55,7 @@ $total_a_traiter = $cnx->query($sql_total_a_traiter)->fetchColumn();
 <body class="bg-gray-100">
 
 <!-- Barre de navigation -->
-<div class="bg-blue-600 text-white py-4 px-8 flex justify-between items-center">
-    <div>
-        <img src="../public/images/logo.webp" alt="Logo" class="w-32">
-    </div>
-    <div class="flex-grow flex justify-center space-x-8">
-        <a href="gestion_remboursement.php" class="text-white hover:text-gray-300">Gestion des remboursements</a>
-        <a href="../views/fiches/gestion_fiche.php" class="text-white hover:text-gray-300">Gestion des fiches</a>
-    </div>
-    <div class="flex items-center space-x-4">
-        <span class="text-white"><?= htmlspecialchars($_SESSION['user']['firstname'] . ' ' . $_SESSION['user']['lastname']); ?></span>
-        <img src="../public/images/profil.jpg" alt="Profil" class="w-10 h-10 rounded-full border-2 border-white">
-    </div>
-</div>
+<?php include('../includes/menu_comptable.php'); ?>
 
 <!-- Section principale -->
 <div class="container mx-auto p-8">

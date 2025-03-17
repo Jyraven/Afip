@@ -8,6 +8,12 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
+// Récupération des informations utilisateur
+$user = $_SESSION['user'];
+$user_id = $user['id'];
+$user_role = $user['role'];
+$is_comptable = ($user_role === 'Comptable');
+
 // Récupération de l'ID de la fiche de frais
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     echo "ID de fiche invalide.";
@@ -41,68 +47,6 @@ $ligneFraisStmt = $cnx->prepare($ligneFraisSql);
 $ligneFraisStmt->bindValue(':id_fiche', $ficheId, PDO::PARAM_INT);
 $ligneFraisStmt->execute();
 $lignesFrais = $ligneFraisStmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Récupérer les types de frais pour le formulaire
-$query = $cnx->query("SELECT id_tf, type FROM type_frais");
-$typeFrais = $query->fetchAll(PDO::FETCH_ASSOC);
-
-// Gestion du formulaire
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['submit_fiche'])) {
-        $action = $_POST['submit_fiche'];
-        
-        // Traitement des lignes de frais
-        foreach ($_POST['type_frais'] as $index => $typeFraisId) {
-            $quantite = $_POST['quantite'][$index];
-            $montant = str_replace(',', '.', $_POST['montant'][$index]);
-            $dateFrais = $_POST['sp_date'][$index];
-            $justificatif = null;
-
-            // Vérification et gestion du justificatif
-            if (isset($_FILES['justificatif']['name'][$index]) && $_FILES['justificatif']['error'][$index] === UPLOAD_ERR_OK) {
-                $fileTmpPath = $_FILES['justificatif']['tmp_name'][$index];
-                $fileName = $_FILES['justificatif']['name'][$index];
-                $fileSize = $_FILES['justificatif']['size'][$index];
-                $fileType = mime_content_type($fileTmpPath);
-                $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
-                
-                if (in_array($fileType, $allowedTypes)) {
-                    $destination = "../justificatif/" . uniqid() . "_" . $fileName;
-                    move_uploaded_file($fileTmpPath, $destination);
-                    $justificatif = $destination;
-                } else {
-                    echo "Le fichier doit être une image (JPEG, PNG, GIF) ou un PDF.";
-                    exit();
-                }
-            }
-
-            $sql = "INSERT INTO lignes_frais (id_fiche, id_tf, quantité, total, sp_date, justif) 
-                    VALUES (:id_fiche, :id_tf, :quantite, :montant, :sp_date, :justif)";
-            $stmt = $cnx->prepare($sql);
-            $stmt->execute([
-                ':id_fiche' => $ficheId,
-                ':id_tf' => $typeFraisId,
-                ':quantite' => $quantite,
-                ':montant' => $montant,
-                ':sp_date' => $dateFrais,
-                ':justif' => $justificatif,
-            ]);
-        }
-
-        // Si action = 'close', mise à jour du statut et de la date de fermeture
-        if ($action === 'close') {
-            $updateSql = "UPDATE fiches 
-                          SET status_id = (SELECT status_id FROM status_fiche WHERE name_status = 'Clôturée'),
-                              cl_date = NOW()
-                          WHERE id_fiches = :id_fiche";
-            $updateStmt = $cnx->prepare($updateSql);
-            $updateStmt->execute([':id_fiche' => $ficheId]);
-        }
-
-        header('Location: gestion_fiche.php');
-        exit();
-    }
-}
 
 // Vérification du statut de la fiche pour l'affichage conditionnel
 $isOuverte = $fiche['status'] === 'Ouverte';
@@ -151,35 +95,30 @@ $isOuverte = $fiche['status'] === 'Ouverte';
             </tbody>
         </table>
 
-        <form method="POST" enctype="multipart/form-data" class="mt-6">
-            <?php if ($isOuverte): ?>
+        <!-- 🔹 Formulaire uniquement si l'utilisateur n'est PAS un comptable -->
+        <?php if (!$is_comptable && $isOuverte): ?>
+            <form method="POST" enctype="multipart/form-data" class="mt-6">
                 <h3 class="text-lg font-bold">Ajouter des frais</h3>
                 <div id="newLines"></div>
                 <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded-md mt-4" onclick="addNewLine()">Ajouter une ligne</button>
-            <?php endif; ?>
 
-            <div class="mt-6">
-                <?php if ($isOuverte): ?>
+                <div class="mt-6">
                     <button type="submit" name="submit_fiche" value="open" class="bg-green-500 text-white px-6 py-2 rounded-md">Soumettre</button>
                     <button type="submit" name="submit_fiche" value="close" class="bg-red-500 text-white px-6 py-2 rounded-md">Clôturer</button>
-                <?php endif; ?>
-            </div>
-        </form>
+                </div>
+            </form>
+        <?php endif; ?>
 
+        <!-- Bouton de retour -->
         <div class="absolute bottom-6 right-6">
-            <?php if ($_SESSION['user']['role'] === 'Comptable'): ?>
-                <a href="../../templates/comptable.php" class="bg-gray-500 text-white px-4 py-2 rounded-md">
-                    Retour
-                </a>
-            <?php else: ?>
-                <a href="gestion_fiche.php" class="bg-gray-500 text-white px-4 py-2 rounded-md">
-                    Retour à la gestion des fiches
-                </a>
-            <?php endif; ?>
+            <a href="gestion_fiche.php" class="bg-gray-500 text-white px-4 py-2 rounded-md">
+                Retour
+            </a>
         </div>
-
     </div>
 
+    <!-- 🔹 Suppression des scripts d'ajout de ligne si l'utilisateur est un comptable -->
+    <?php if (!$is_comptable): ?>
     <script>
         function addNewLine() {
             const container = document.getElementById('newLines');
@@ -209,5 +148,6 @@ $isOuverte = $fiche['status'] === 'Ouverte';
             }
         }
     </script>
+    <?php endif; ?>
 </body>
 </html>
