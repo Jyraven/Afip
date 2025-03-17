@@ -23,18 +23,18 @@ if ($_POST) {
                 'firstname' => $user['user_firstname'],
                 'lastname' => $user['user_lastname'],
                 'id' => $user['id_user'],
-                'role' => $user['role'] // Nom du rôle
+                'role' => $user['role']
             ];
             //Redirection selon le rôle
             switch ($user['role']) {
                 case 'Administrateur':
-                    header("Location: vues/admin.php");
+                    header("Location: templates/admin.php");
                     exit();
                 case 'Comptable':
-                    header("Location: vues/comptable.php");
+                    header("Location: templates/comptable.php");
                     exit();
                 case 'Visiteur':
-                    header("Location: vues/visiteur.php");
+                    header("Location: templates/visiteur.php");
                     exit();
                 default:
                     echo '<div class="alert alert-warning" role="alert">Erreur : Veuillez contacter un administrateur pour obtenir un rôle.</div>';

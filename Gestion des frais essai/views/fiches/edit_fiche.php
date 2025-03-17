@@ -168,7 +168,7 @@ $isOuverte = $fiche['status'] === 'Ouverte';
 
         <div class="absolute bottom-6 right-6">
             <?php if ($_SESSION['user']['role'] === 'Comptable'): ?>
-                <a href="../../vues/comptable.php" class="bg-gray-500 text-white px-4 py-2 rounded-md">
+                <a href="../../templates/comptable.php" class="bg-gray-500 text-white px-4 py-2 rounded-md">
                     Retour
                 </a>
             <?php else: ?>

@@ -35,19 +35,19 @@ switch ($_GET['action'] ?? "") {
         break;
     case 'Administrateur':
         if ($_SESSION['user']['role'] == 'Administrateur') {
-            header("Location: vues/admin.php");
+            header("Location: templates/admin.php");
             exit();
         }
         break;
     case 'Comptable':
         if ($_SESSION['user']['role'] == 'Comptable') {
-            header("Location: vues/comptable.php");
+            header("Location: templates/comptable.php");
             exit();
         }
         break;
     case 'Visiteur':
         if ($_SESSION['user']['role'] == 'Visiteur') {
-            header("Location: vues/visiteur.php");
+            header("Location: templates/visiteur.php");
             exit();
         }
         

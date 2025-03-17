@@ -12,7 +12,7 @@ $basePath = (in_array($currentPage, ['admin.php'])) ? "../" : "../../";
     </div>
     <div class="flex-grow flex justify-center space-x-8">
         <?php if ($currentPage !== 'admin.php'): ?>
-            <a href="<?= $basePath ?>/vues/admin.php" class="text-white hover:text-gray-300 <?= $currentPage === 'admin.php' ? 'font-bold underline' : '' ?>">
+            <a href="<?= $basePath ?>/templates/admin.php" class="text-white hover:text-gray-300 <?= $currentPage === 'admin.php' ? 'font-bold underline' : '' ?>">
                 Accueil
             </a>
         <?php endif; ?>

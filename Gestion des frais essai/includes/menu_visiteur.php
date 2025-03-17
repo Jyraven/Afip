@@ -19,7 +19,7 @@ $logo_path = (strpos($_SERVER['PHP_SELF'], 'views/fiches') !== false) ? "../../p
 
     <div class="flex-grow flex justify-center space-x-8">
         <?php if ($current_page === "gestion_fiche.php"): ?>
-            <a href="../../vues/visiteur.php" class="text-white hover:text-gray-300">Accueil</a>
+            <a href="../../templates/visiteur.php" class="text-white hover:text-gray-300">Accueil</a>
         <?php else: ?>
             <a href="../views/fiches/gestion_fiche.php" class="text-white hover:text-gray-300">Gestion des fiches</a>
         <?php endif; ?>
