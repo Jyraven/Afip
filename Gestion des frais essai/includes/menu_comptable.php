@@ -18,7 +18,7 @@ $basePath = (in_array($currentPage, ['comptable.php'])) ? "../" : "../../";
         <?php endif; ?>
 
         <?php if ($currentPage !== 'gestion_remboursement.php'): ?>
-            <a href="<?= $basePath ?>views/remboursements/gestion_remboursement.php" class="text-white hover:text-gray-300 <?= $currentPage === 'gestion_remboursement.php' ? 'font-bold underline' : '' ?>">
+            <a href="<?= $basePath ?>views/fiches/gestion_remboursement.php" class="text-white hover:text-gray-300 <?= $currentPage === 'gestion_remboursement.php' ? 'font-bold underline' : '' ?>">
                 Gestion des remboursements
             </a>
         <?php endif; ?>

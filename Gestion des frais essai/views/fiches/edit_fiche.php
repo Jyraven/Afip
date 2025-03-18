@@ -101,7 +101,6 @@ $isOuverte = $fiche['status'] === 'Ouverte';
                 <h3 class="text-lg font-bold">Ajouter des frais</h3>
                 <div id="newLines"></div>
                 <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded-md mt-4" onclick="addNewLine()">Ajouter une ligne</button>
-
                 <div class="mt-6">
                     <button type="submit" name="submit_fiche" value="open" class="bg-green-500 text-white px-6 py-2 rounded-md">Soumettre</button>
                     <button type="submit" name="submit_fiche" value="close" class="bg-red-500 text-white px-6 py-2 rounded-md">Clôturer</button>
@@ -111,43 +110,44 @@ $isOuverte = $fiche['status'] === 'Ouverte';
 
         <!-- Bouton de retour -->
         <div class="absolute bottom-6 right-6">
-            <a href="gestion_fiche.php" class="bg-gray-500 text-white px-4 py-2 rounded-md">
+            <a href="<?= ($_SESSION['user']['role'] === 'Comptable') ? 'gestion_remboursement.php' : 'gestion_fiche.php' ?>" 
+            class="bg-gray-500 text-white px-4 py-2 rounded-md">
                 Retour
             </a>
         </div>
-    </div>
 
-    <!-- 🔹 Suppression des scripts d'ajout de ligne si l'utilisateur est un comptable -->
-    <?php if (!$is_comptable): ?>
-    <script>
-        function addNewLine() {
-            const container = document.getElementById('newLines');
-            const lineId = Date.now();
-            const newLine = document.createElement('div');
-            newLine.className = "grid grid-cols-6 gap-4 mt-4 items-center";
-            newLine.setAttribute('data-line-id', lineId);
-            newLine.innerHTML = `
-                <select name="type_frais[]" class="p-2 border rounded">
-                    <?php foreach ($typeFrais as $type): ?>
-                        <option value="<?= $type['id_tf']; ?>"><?= $type['type']; ?></option>
-                    <?php endforeach; ?>
-                </select>
-                <input type="number" name="quantite[]" class="p-2 border rounded" placeholder="Quantité" required min="0">
-                <input type="text" name="montant[]" class="p-2 border rounded" placeholder="Total" required>
-                <input type="date" name="sp_date[]" class="p-2 border rounded" required>
-                <input type="file" name="justificatif[]" class="p-2 border rounded w-80" required>
-                <button type="button" class="text-red-500 font-bold text-3xl ml-8" onclick="removeLine(${lineId})">×</button>
-            `;
-            container.appendChild(newLine);
-        }
 
-        function removeLine(lineId) {
-            const line = document.querySelector(`[data-line-id="${lineId}"]`);
-            if (line) {
-                line.remove();
-            }
-        }
-    </script>
-    <?php endif; ?>
-</body>
+        <!-- 🔹 Suppression des scripts d'ajout de ligne si l'utilisateur est un comptable -->
+        <?php if (!$is_comptable): ?>
+            <script>
+                function addNewLine() {
+                    const container = document.getElementById('newLines');
+                    const lineId = Date.now();
+                    const newLine = document.createElement('div');
+                    newLine.className = "grid grid-cols-6 gap-4 mt-4 items-center";
+                    newLine.setAttribute('data-line-id', lineId);
+                    newLine.innerHTML = `
+                        <select name="type_frais[]" class="p-2 border rounded">
+                            <?php foreach ($typeFrais as $type): ?>
+                                <option value="<?= $type['id_tf']; ?>"><?= $type['type']; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <input type="number" name="quantite[]" class="p-2 border rounded" placeholder="Quantité" required min="0">
+                        <input type="text" name="montant[]" class="p-2 border rounded" placeholder="Total" required>
+                        <input type="date" name="sp_date[]" class="p-2 border rounded" required>
+                        <input type="file" name="justificatif[]" class="p-2 border rounded w-80" required>
+                        <button type="button" class="text-red-500 font-bold text-3xl ml-8" onclick="removeLine(${lineId})">×</button>
+                    `;
+                    container.appendChild(newLine);
+                }
+
+                function removeLine(lineId) {
+                    const line = document.querySelector(`[data-line-id="${lineId}"]`);
+                    if (line) {
+                        line.remove();
+                    }
+                }
+            </script>
+        <?php endif; ?>
+    </body>
 </html>

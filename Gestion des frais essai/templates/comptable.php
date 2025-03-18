@@ -131,12 +131,12 @@ $total_a_traiter = $cnx->query($sql_total_a_traiter)->fetchColumn();
                             <td class="border p-2 text-center">
                                 <div class="flex justify-center space-x-4">
                                     <!-- Bouton Voir -->
-                                    <a href="edit_fiche.php?id=<?= $fiche['id_fiches'] ?>" 
+                                    <a href="../views/fiches/edit_fiche.php?id=<?= $fiche['id_fiches'] ?>" 
                                     class="text-blue-600 hover:text-blue-800 text-xl transition" title="Voir">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     <!-- Bouton Gestion Remboursement -->
-                                    <a href="gestion_remboursement.php?id=<?= $fiche['id_fiches'] ?>" 
+                                    <a href="../views/fiches/gestion_remboursement.php?id=<?= $fiche['id_fiches'] ?>" 
                                     class="text-green-600 hover:text-green-800 text-xl transition" title="Gérer remboursement">
                                         <i class="fas fa-money-bill-wave"></i>
                                     </a>

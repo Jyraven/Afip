@@ -31,7 +31,13 @@ try {
         ]);
 
         $cnx->commit(); // Valider la transaction
-        header('Location: ../../templates/comptable.php?success=fiche_attribuee');
+
+        // Vérifier si la source est "gestion_remboursement" et rediriger correctement
+        $redirectPage = isset($_GET['source']) && $_GET['source'] === 'gestion_remboursement' 
+            ? 'gestion_remboursement.php?onglet=a_traiter&success=fiche_attribuee' 
+            : '../../templates/comptable.php?success=fiche_attribuee';
+
+        header("Location: $redirectPage");
         exit();
 
     } elseif ($action === 'retirer') {
@@ -52,8 +58,13 @@ try {
         $stmt->execute([':id_fiche' => $ficheId]);
 
         $cnx->commit(); // Valider la transaction
-        header('Location: ../../templates/comptable.php?success=fiche_desattribuee');
-        exit();
+        $redirectPage = isset($_GET['source']) && $_GET['source'] === 'gestion_remboursement' 
+        ? 'gestion_remboursement.php?onglet=attribuees&success=fiche_desattribuee' 
+        : '../../templates/comptable.php?success=fiche_desattribuee';
+    
+    header("Location: $redirectPage");
+    exit();
+    
 
     } else {
         // Action invalide

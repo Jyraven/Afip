@@ -24,7 +24,7 @@ $logo_path = (strpos($_SERVER['PHP_SELF'], 'views/fiches') !== false) ? "../../p
             <a href="../views/fiches/gestion_fiche.php" class="text-white hover:text-gray-300">Mes fiches de frais</a>
         <?php endif; ?>
 
-        <a href="../views/fiches/historique_remboursement.php" class="text-white hover:text-gray-300">Historique des remboursements</a>
+        <a href="../views/fiches/gestion_remboursement.php" class="text-white hover:text-gray-300">Historique des remboursements</a>
     </div>
 
     <div class="flex items-center space-x-4">
