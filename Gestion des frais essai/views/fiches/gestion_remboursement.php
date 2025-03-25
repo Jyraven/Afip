@@ -2,51 +2,62 @@
 session_start();
 require_once('../../pdo/bdd.php');
 
-// Vérification du rôle (Comptable uniquement)
-if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'Comptable') {
+if (!isset($_SESSION['user'])) {
     header('Location: ../../login.php');
     exit();
 }
 
-$user_id = $_SESSION['user']['id'];
+$user = $_SESSION['user'];
+$user_id = $user['id'];
+$is_comptable = $user['role'] === 'Comptable';
+$is_visiteur = $user['role'] === 'Visiteur';
 
-// Déterminer l'onglet actif (par défaut : "Attribuées")
-$onglet_actif = isset($_GET['onglet']) ? $_GET['onglet'] : 'attribuees';
+// Déterminer l'onglet actif
+$onglet_actif = isset($_GET['onglet']) ? $_GET['onglet'] : ($is_visiteur ? 'historique' : 'attribuees');
 
-// 📌 Récupérer les fiches attribuées au comptable
-$sql_attribuees = "SELECT f.*, u.user_firstname, u.user_lastname, s.name_status 
-                   FROM fiches f
-                   LEFT JOIN users u ON f.id_users = u.id_user
-                   LEFT JOIN status_fiche s ON f.status_id = s.status_id
-                   WHERE f.id_comptable = :id_comptable AND f.status_id != 5
-                   ORDER BY f.op_date DESC";
+if ($is_comptable) {
+    $sql_attribuees = "SELECT f.*, u.user_firstname, u.user_lastname, s.name_status 
+                       FROM fiches f
+                       LEFT JOIN users u ON f.id_users = u.id_user
+                       LEFT JOIN status_fiche s ON f.status_id = s.status_id
+                       WHERE f.id_comptable = :id_comptable 
+                       AND f.status_id != 4
+                       ORDER BY f.op_date DESC";
 
-$stmt_attribuees = $cnx->prepare($sql_attribuees);
-$stmt_attribuees->bindValue(':id_comptable', $user_id, PDO::PARAM_INT);
-$stmt_attribuees->execute();
-$fiches_attribuees = $stmt_attribuees->fetchAll(PDO::FETCH_ASSOC);
+    $stmt_attribuees = $cnx->prepare($sql_attribuees);
+    $stmt_attribuees->bindValue(':id_comptable', $user_id, PDO::PARAM_INT);
+    $stmt_attribuees->execute();
+    $fiches_attribuees = $stmt_attribuees->fetchAll(PDO::FETCH_ASSOC);
 
-// 📌 Récupérer les fiches clôturées à traiter
-$sql_a_traiter = "SELECT f.*, u.user_firstname, u.user_lastname, s.name_status 
-                  FROM fiches f
-                  LEFT JOIN users u ON f.id_users = u.id_user
-                  LEFT JOIN status_fiche s ON f.status_id = s.status_id
-                  WHERE f.status_id = 1
-                  ORDER BY f.op_date DESC";
+    $sql_a_traiter = "SELECT f.*, u.user_firstname, u.user_lastname, s.name_status 
+                      FROM fiches f
+                      LEFT JOIN users u ON f.id_users = u.id_user
+                      LEFT JOIN status_fiche s ON f.status_id = s.status_id
+                      WHERE f.status_id = 1
+                      ORDER BY f.op_date DESC";
 
-$stmt_a_traiter = $cnx->prepare($sql_a_traiter);
-$stmt_a_traiter->execute();
-$fiches_a_traiter = $stmt_a_traiter->fetchAll(PDO::FETCH_ASSOC);
+    $stmt_a_traiter = $cnx->prepare($sql_a_traiter);
+    $stmt_a_traiter->execute();
+    $fiches_a_traiter = $stmt_a_traiter->fetchAll(PDO::FETCH_ASSOC);
+}
 
-// 📌 Récupérer l'historique des fiches traitées
 $sql_historique = "SELECT f.*, u.user_firstname, u.user_lastname, s.name_status, f.total_frais, f.total_rembourse
                    FROM fiches f
                    LEFT JOIN users u ON f.id_users = u.id_user
                    LEFT JOIN status_fiche s ON f.status_id = s.status_id
-                   WHERE f.status_id = 5
-                   ORDER BY f.op_date DESC";
+                   WHERE f.status_id = 4";
 
+if ($is_visiteur) {
+    $sql_historique .= " AND f.id_users = :id_user";
+}
+
+$sql_historique .= " ORDER BY f.op_date DESC";
 $stmt_historique = $cnx->prepare($sql_historique);
+
+if ($is_visiteur) {
+    $stmt_historique->bindValue(':id_user', $user_id, PDO::PARAM_INT);
+}
+
 $stmt_historique->execute();
 $fiches_historique = $stmt_historique->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -62,64 +73,33 @@ $fiches_historique = $stmt_historique->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body class="bg-gray-100">
 
-<?php include('../../includes/menu_comptable.php'); ?>
+<?php
+if ($is_comptable) {
+    include('../../includes/menu_comptable.php');
+} elseif ($is_visiteur) {
+    include('../../includes/menu_visiteur.php');
+}
+?>
 
 <div class="container mx-auto p-8 bg-white shadow-md rounded-md">
     <h1 class="text-3xl font-semibold text-center text-blue-600 mb-4">Gestion des Remboursements</h1>
 
-    <!-- Onglets de navigation -->
     <div class="flex justify-center space-x-4 mb-6">
-        <a href="?onglet=attribuees" class="px-6 py-2 rounded-md <?= $onglet_actif === 'attribuees' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800' ?>">
-            Fiches attribuées
-        </a>
-        <a href="?onglet=a_traiter" class="px-6 py-2 rounded-md <?= $onglet_actif === 'a_traiter' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800' ?>">
-            Fiches à traiter
-        </a>
+        <?php if ($is_comptable): ?>
+            <a href="?onglet=attribuees" class="px-6 py-2 rounded-md <?= $onglet_actif === 'attribuees' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800' ?>">
+                Fiches attribuées
+            </a>
+            <a href="?onglet=a_traiter" class="px-6 py-2 rounded-md <?= $onglet_actif === 'a_traiter' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800' ?>">
+                Fiches à traiter
+            </a>
+        <?php endif; ?>
         <a href="?onglet=historique" class="px-6 py-2 rounded-md <?= $onglet_actif === 'historique' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800' ?>">
             Historique
         </a>
     </div>
 
-    <!-- Message de succès pour l'attribution -->
-    <?php if (isset($_GET['success']) && $_GET['success'] === 'fiche_attribuee'): ?>
-        <div id="successMessage" class="relative bg-green-500 text-white px-4 py-2 rounded-md text-center mb-4">
-            La fiche vous a été attribuée avec succès.
-            <button class="absolute top-1 right-3 text-white hover:text-gray-300 font-bold" 
-                onclick="document.getElementById('successMessage').classList.add('hidden')">
-                &times;
-            </button>
-        </div>
-    <?php endif; ?>
-
-    <!-- Message d'erreur -->
-    <?php if (isset($_GET['error'])): ?>
-        <div class="bg-red-500 text-white px-4 py-2 rounded-md text-center mb-4">
-            Une erreur est survenue lors de l'attribution de la fiche.
-        </div>
-    <?php endif; ?>
-
-    <!-- Message de succès pour la désattribution -->
-    <?php if (isset($_GET['success']) && $_GET['success'] === 'fiche_desattribuee'): ?>
-        <div id="desattribMessage" class="relative bg-yellow-500 text-white px-4 py-2 rounded-md text-center mb-4">
-            La fiche ne vous est plus attribuée
-            <button class="absolute top-1 right-3 text-white hover:text-gray-300 font-bold" 
-                onclick="document.getElementById('desattribMessage').classList.add('hidden')">
-                &times;
-            </button>
-        </div>
-    <?php endif; ?>
-    <?php if (isset($_GET['error']) && $_GET['error'] === 'desattrib_fail'): ?>
-        <div id="desattribError" class="relative bg-red-500 text-white px-4 py-2 rounded-md text-center mb-4">
-            Une erreur est survenue lors de la désattribution de la fiche.
-            <button class="absolute top-1 right-3 text-white hover:text-gray-300 font-bold" 
-                onclick="document.getElementById('desattribError').classList.add('hidden')">
-                &times;
-            </button>
-        </div>
-    <?php endif; ?>
-
     <!-- Fiche attribuees -->
-    <?php if ($onglet_actif === 'attribuees'): ?>
+    <?php if ($onglet_actif === 'attribuees' && $is_comptable): ?>
         <table class="w-full border-collapse border bg-white">
             <thead>
                 <tr>
@@ -138,11 +118,11 @@ $fiches_historique = $stmt_historique->fetchAll(PDO::FETCH_ASSOC);
                         <td class="border p-2"><?= $fiche['op_date'] ?></td>
                         <td class="border p-2"><?= htmlspecialchars($fiche['name_status']) ?></td>
                         <td class="border p-2 text-center">
+                            <a href="edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=gestion_remboursement&onglet=attribuees" class="text-blue-600">
+                                <i class="fas fa-eye"></i>
+                            </a>
                             <a href="attribution_fiche.php?action=retirer&id=<?= $fiche['id_fiches'] ?>&source=gestion_remboursement" class="text-red-600">
                                 <i class="fas fa-user-times"></i>
-                            </a>
-                            <a href="traiter_fiche.php?id=<?= $fiche['id_fiches'] ?>" class="text-blue-600">
-                                <i class="fas fa-eye"></i>
                             </a>
                         </td>
                     </tr>
@@ -150,8 +130,8 @@ $fiches_historique = $stmt_historique->fetchAll(PDO::FETCH_ASSOC);
             </tbody>
         </table>
 
-    <!-- Fiches à traiter -->
-    <?php elseif ($onglet_actif === 'a_traiter'): ?>
+    <!-- Fiche à traiter -->
+    <?php elseif ($onglet_actif === 'a_traiter' && $is_comptable): ?>
         <table class="w-full border-collapse border bg-white">
             <thead>
                 <tr>
@@ -170,21 +150,22 @@ $fiches_historique = $stmt_historique->fetchAll(PDO::FETCH_ASSOC);
                         <td class="border p-2"><?= $fiche['op_date'] ?></td>
                         <td class="border p-2"><?= htmlspecialchars($fiche['name_status']) ?></td>
                         <td class="border p-2 text-center">
+                            <a href="edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=gestion_remboursement&onglet=a_traiter" class="text-blue-600">
+                                <i class="fas fa-eye"></i>
+                            </a>
                             <a href="attribution_fiche.php?action=attribuer&id=<?= $fiche['id_fiches'] ?>&source=gestion_remboursement" class="text-green-600">
                                 <i class="fas fa-user-check"></i>
-                            </a>
-                            <a href="traiter_fiche.php?id=<?= $fiche['id_fiches'] ?>" class="text-blue-600">
-                                <i class="fas fa-eye"></i>
                             </a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
+    <?php endif; ?>
 
-    <!-- Historique des fiches -->
-    <?php elseif ($onglet_actif === 'historique'): ?>
-        <table class="w-full border-collapse border bg-white">
+    <!-- Historique -->
+    <?php if ($onglet_actif === 'historique'): ?>
+        <table class="w-full border-collapse border bg-white mt-8">
             <thead>
                 <tr>
                     <th class="border p-2">ID</th>
@@ -192,6 +173,7 @@ $fiches_historique = $stmt_historique->fetchAll(PDO::FETCH_ASSOC);
                     <th class="border p-2">Date d'ouverture</th>
                     <th class="border p-2">Total Frais</th>
                     <th class="border p-2">Total Remboursé</th>
+                    <th class="border p-2 text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -202,12 +184,16 @@ $fiches_historique = $stmt_historique->fetchAll(PDO::FETCH_ASSOC);
                         <td class="border p-2"><?= $fiche['op_date'] ?></td>
                         <td class="border p-2"><?= $fiche['total_frais'] ?> €</td>
                         <td class="border p-2"><?= $fiche['total_rembourse'] ?> €</td>
+                        <td class="border p-2 text-center">
+                            <a href="edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=historique" class="text-blue-600" title="Voir la fiche">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
     <?php endif; ?>
 </div>
-
 </body>
 </html>

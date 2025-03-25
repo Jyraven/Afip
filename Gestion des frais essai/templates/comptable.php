@@ -18,6 +18,7 @@ $sql_attribuees = "SELECT f.*, u.user_firstname, u.user_lastname, s.name_status 
                    LEFT JOIN users u ON f.id_users = u.id_user
                    LEFT JOIN status_fiche s ON f.status_id = s.status_id
                    WHERE f.id_comptable = :id_comptable
+                   AND f.status_id != 4
                    ORDER BY f.op_date DESC";
 
 $stmt_attribuees = $cnx->prepare($sql_attribuees);
@@ -62,12 +63,7 @@ $total_a_traiter = $cnx->query($sql_total_a_traiter)->fetchColumn();
     <h1 class="text-3xl font-semibold text-center text-blue-600 mb-4">
         Bonjour <?= htmlspecialchars($_SESSION['user']['firstname'] . ' ' . $_SESSION['user']['lastname']); ?>, vous êtes <strong>Comptable</strong>.
     </h1>
-    <form action="../Auth/logout.php" method="post" class="flex justify-center mt-8">
-        <button type="submit" class="bg-red-600 text-white px-6 py-3 rounded-md hover:bg-red-700 transition">
-            Se déconnecter
-        </button>
-    </form>
-
+    
     <!-- 📌 Fiches attribuées -->
     <div class="mt-8 bg-white shadow-md rounded-lg p-6">
 
@@ -131,13 +127,7 @@ $total_a_traiter = $cnx->query($sql_total_a_traiter)->fetchColumn();
                             <td class="border p-2 text-center">
                                 <div class="flex justify-center space-x-4">
                                     <!-- Bouton Voir -->
-                                    <a href="../views/fiches/edit_fiche.php?id=<?= $fiche['id_fiches'] ?>" 
-                                    class="text-blue-600 hover:text-blue-800 text-xl transition" title="Voir">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <!-- Bouton Gestion Remboursement -->
-                                    <a href="../views/fiches/gestion_remboursement.php?id=<?= $fiche['id_fiches'] ?>" 
-                                    class="text-green-600 hover:text-green-800 text-xl transition" title="Gérer remboursement">
+                                    <a href="../views/fiches/edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=comptable" class="text-green-600 hover:text-green-800 text-xl transition">
                                         <i class="fas fa-money-bill-wave"></i>
                                     </a>
                                     <!-- Bouton Retirer l'attribution -->
@@ -179,9 +169,11 @@ $total_a_traiter = $cnx->query($sql_total_a_traiter)->fetchColumn();
                         <td class="border p-2"><?= htmlspecialchars($fiche['status']) ?></td>
                         <td class="border p-2 text-center">
                             <div class="flex justify-center space-x-4">
-                                <a href="../views/fiches/edit_fiche.php?id=<?= $fiche['id_fiches'] ?>" class="text-blue-600 hover:text-blue-800 text-xl transition">
+                                <!-- Bouton Voir -->
+                                <a href="../views/fiches/edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=comptable" class="text-blue-600">
                                     <i class="fas fa-eye"></i>
                                 </a>
+                                <!-- Bouton Attribuer -->
                                 <a href="../views/fiches/attribution_fiche.php?action=attribuer&id=<?= $fiche['id_fiches'] ?>"
                                 class="text-green-600 hover:text-green-800 text-xl transition">
                                     <i class="fas fa-user-check"></i>

@@ -47,13 +47,8 @@ $fiches = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <!-- Bouton pour créer une nouvelle fiche de frais -->
     <div class="flex justify-center mb-6">
-        <a href="../views/fiches/fiche_frais.php" class="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition">Créer une nouvelle fiche de frais</a>
+        <a href="../views/fiches/fiche_frais.php?source=visiteur" class="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition">Créer une nouvelle fiche de frais</a>
     </div>
-    <form action="../Auth/logout.php" method="post" class="flex justify-center mt-8">
-        <button type="submit" class="bg-red-600 text-white px-6 py-3 rounded-md hover:bg-red-700 transition">
-            Se déconnecter
-        </button>
-    </form>
 
     <!-- Affichage des fiches de frais -->
     <table class="w-full border-collapse border">
@@ -76,7 +71,7 @@ $fiches = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <td class="border p-2 text-center"><?= htmlspecialchars($fiche['status']) ?></td>
                         <td class="border p-2 flex justify-center space-x-4">
                             <!-- Bouton Voir la fiche -->
-                            <a href="../views/fiches/edit_fiche.php?id=<?= $fiche['id_fiches'] ?>" class="text-blue-600 font-bold" title="Voir la fiche">
+                            <a href="../views/fiches/edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=visiteur" class="text-blue-600">
                                 <i class="fas fa-eye"></i>
                             </a>
                             <!-- Bouton Supprimer la fiche -->

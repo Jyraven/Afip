@@ -14,28 +14,15 @@ $user_id = $user['id'];
 $user_role = $user['role'];
 $is_comptable = ($user_role === 'Comptable');
 
-// 🔹 Détermination du menu à inclure selon le rôle de l'utilisateur
+// Détermination du menu à inclure selon le rôle de l'utilisateur
 $menuFile = '';
-
-if ($user_role === 'Administrateur') {
-    $menuFile = '../../includes/menu_admin.php';
-} elseif ($user_role === 'Comptable') {
-    $menuFile = '../../includes/menu_comptable.php';
-} elseif ($user_role === 'Visiteur') {
-    $menuFile = '../../includes/menu_visiteur.php';
-}
-
-// Vérifie si le fichier existe avant de l'inclure
-if (!empty($menuFile) && file_exists($menuFile)) {
-    include($menuFile);
-}
 
 // Pagination
 $limit = 10;
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $limit;
 
-// 🔹 Filtres avec valeurs par défaut
+// Filtres avec valeurs par défaut
 $order = $_GET['order'] ?? 'asc';
 $sortBy = $_GET['sortBy'] ?? 'id_fiches';
 $status = $_GET['status'] ?? ($is_comptable ? 'Ouverte' : '');
@@ -48,17 +35,17 @@ $sql = "SELECT f.*, u.user_firstname, u.user_lastname, s.name_status as status
         LEFT JOIN status_fiche s ON f.status_id = s.status_id
         WHERE 1=1";
 
-// 🔹 Si l'utilisateur est un visiteur, il ne voit que ses propres fiches
+// Si l'utilisateur est un visiteur, il ne voit que ses propres fiches
 if ($user_role === 'Visiteur') {
     $sql .= " AND f.id_users = :user_id";
 }
 
-// 🔹 Exclure les fiches "En cours de traitement" pour un comptable
+// Exclure les fiches "En cours de traitement" pour un comptable
 if ($is_comptable) {
     $sql .= " AND f.status_id != 3";
 }
 
-// 🔹 Ajout des filtres sélectionnés
+// Ajout des filtres sélectionnés
 if (!empty($status)) {
     $sql .= " AND s.name_status = :status";
 }
@@ -66,7 +53,7 @@ if (!empty($search)) {
     $sql .= " AND (u.user_firstname LIKE :search OR u.user_lastname LIKE :search OR f.id_fiches LIKE :search)";
 }
 
-// 🔹 Ajout de l’ordre et de la pagination
+// Ajout de l’ordre et de la pagination
 $sql .= " ORDER BY $sortBy $order LIMIT :limit OFFSET :offset";
 
 // Exécution de la requête
@@ -85,7 +72,7 @@ $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $fiches = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// 🔹 Correction du comptage total des fiches
+// Correction du comptage total des fiches
 $countSql = "SELECT COUNT(*) FROM fiches f 
              LEFT JOIN users u ON f.id_users = u.id_user 
              LEFT JOIN status_fiche s ON f.status_id = s.status_id
@@ -118,11 +105,14 @@ if (!empty($search)) {
 $countStmt->execute();
 $totalFiches = $countStmt->fetchColumn();
 
-// 🔹 Correction du nombre total de pages pour éviter une page vide
+// Correction du nombre total de pages pour éviter une page vide
 $totalPages = max(ceil($totalFiches / $limit), 1);
 
-// 🔹 Générer l'URL avec les filtres pour la pagination
+// Générer l'URL avec les filtres pour la pagination
 $baseUrl = "gestion_fiche.php?sortBy=$sortBy&order=$order&status=$status&search=" . urlencode($search);
+
+$currentQuery = $_SERVER['QUERY_STRING'];
+
 ?>
 
 <!DOCTYPE html>
@@ -135,6 +125,24 @@ $baseUrl = "gestion_fiche.php?sortBy=$sortBy&order=$order&status=$status&search=
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="bg-gray-100">
+
+    <?php
+    // Détermination du menu à inclure selon le rôle de l'utilisateur
+    $menuFile = '';
+
+    if ($user_role === 'Administrateur') {
+        $menuFile = '../../includes/menu_admin.php';
+    } elseif ($user_role === 'Comptable') {
+        $menuFile = '../../includes/menu_comptable.php';
+    } elseif ($user_role === 'Visiteur') {
+        $menuFile = '../../includes/menu_visiteur.php';
+    }
+
+    if (!empty($menuFile) && file_exists($menuFile)) {
+        include($menuFile);
+    }
+    ?>
+
     
     <div class="p-8">
         <form method="get" class="flex space-x-4 mb-6">
@@ -182,13 +190,16 @@ $baseUrl = "gestion_fiche.php?sortBy=$sortBy&order=$order&status=$status&search=
                     <tr>
                         <td class="border p-2"><?= $fiche['id_fiches'] ?></td>
                         <td class="border p-2"><?= htmlspecialchars($fiche['user_firstname'] . ' ' . $fiche['user_lastname']) ?></td>
-                        <td class="border p-2"><?= $fiche['op_date'] ?></td>
-                        <td class="border p-2"><?= $fiche['cl_date'] ?: 'Non clôturé' ?></td>
+                        <td class="border p-2"><?= date('d/m/Y', strtotime($fiche['op_date'])) ?></td>
+                        <td class="border p-2"><?= $fiche['cl_date'] ? date('d/m/Y', strtotime($fiche['cl_date'])) : 'Non clôturé' ?></td>
                         <td class="border p-2"><?= htmlspecialchars($fiche['status']) ?></td>
                         <td class="border p-2 text-center">
                             <div class="flex justify-center space-x-4">
-                                <a href="edit_fiche.php?id=<?= $fiche['id_fiches'] ?>" class="text-blue-600 hover:text-blue-800 text-xl transition" title="Voir">
+                                 <a href="edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=gestion_fiche&<?= htmlspecialchars($currentQuery) ?>" class="text-blue-600">
                                     <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=gestion_fiche&<?= htmlspecialchars($currentQueryString) ?>" class="delete-btn text-red-600 font-bold">
+                                    <i class="fas fa-trash"></i>
                                 </a>
                             </div>
                         </td>

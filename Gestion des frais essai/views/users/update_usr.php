@@ -18,10 +18,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     // Mise à jour de l'utilisateur
-    $update = $cnx->prepare("UPDATE users SET user_firstname = ?, user_lastname = ?, user_email = ?, id_role = ? WHERE id_user = ?");
-    $update->execute([$firstname, $lastname, $email, $roleId, $id]);
+    $password = $_POST['password'] ?? '';
 
-    echo '<div class="text-green-600">✅ Utilisateur modifié avec succès !</div>';
+    if (!empty($password)) {
+        // Hachage du mot de passe s'il est fourni
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $update = $cnx->prepare("UPDATE users SET user_firstname = ?, user_lastname = ?, user_email = ?, id_role = ?, user_password = ? WHERE id_user = ?");
+        $update->execute([$firstname, $lastname, $email, $roleId, $hashedPassword, $id]);
+    } else {
+        // Pas de mise à jour du mot de passe
+        $update = $cnx->prepare("UPDATE users SET user_firstname = ?, user_lastname = ?, user_email = ?, id_role = ? WHERE id_user = ?");
+        $update->execute([$firstname, $lastname, $email, $roleId, $id]);
+    }    
+
+    echo '<div class="text-green-600">L\'utilisateur a été modifié</div>';
 } else {
     die("<div class='text-red-600'>Erreur : Aucune donnée reçue.</div>");
 }

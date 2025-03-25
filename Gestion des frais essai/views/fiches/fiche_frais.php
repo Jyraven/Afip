@@ -11,6 +11,9 @@ if (!isset($_SESSION['user'])) {
 // Récupérer les informations de l'utilisateur connecté
 $user = $_SESSION['user'];
 
+$source = $_GET['source'] ?? '';
+$returnUrl = ($source === 'visiteur') ? '../../templates/visiteur.php' : 'gestion_fiche.php';
+
 // Récupérer les types de frais depuis la base de données
 $query = $cnx->query("SELECT id_tf, type FROM type_frais");
 $typeFrais = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -175,14 +178,17 @@ $savedForm = $_SESSION['saved_form'] ?? [
             <button type="button" onclick="addExpenseRow()" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mb-4">Ajouter une ligne</button>
             <br>
             <div class="flex justify-between mt-4">
-                <a href="gestion_fiche.php" class="bg-gray-500 text-white px-6 py-2 rounded-md hover:bg-gray-600">
+                <a href="<?php echo isset($_GET['source']) && $_GET['source'] === 'visiteur' ? '../../templates/visiteur.php' : 'gestion_fiche.php'; ?>" 
+                class="bg-gray-500 text-white px-6 py-2 rounded-md hover:bg-gray-600">
                     Retour
                 </a>
                 <div class="flex space-x-4">
-                    <button type="submit" name="submit_fiche" value="open" class="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600">
+                    <button type="submit" name="submit_fiche" value="open" 
+                            class="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600">
                         Soumettre
                     </button>
-                    <button type="submit" name="submit_fiche" value="close" class="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600">
+                    <button type="submit" name="submit_fiche" value="close" 
+                            class="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600">
                         Clôturer
                     </button>
                 </div>

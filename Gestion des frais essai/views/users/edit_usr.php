@@ -37,6 +37,12 @@ $roles = $cnx->query("SELECT id_role, role FROM roles")->fetchAll();
         <input type="text" name="lastname" id="userLastname" value="<?= htmlspecialchars($result['user_lastname']); ?>" class="w-full p-2 border rounded" required>
     </div>
 
+    <div class="mb-4">
+        <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+        <input type="password" name="password" id="password" placeholder="Laisser vide pour ne pas modifier"
+            class="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200">
+    </div>
+
     <div>
         <label for="userRole" class="block font-medium">Rôle</label>
         <select name="role" id="userRole" class="w-full p-2 border rounded" required>
@@ -48,7 +54,10 @@ $roles = $cnx->query("SELECT id_role, role FROM roles")->fetchAll();
         </select>
     </div>
 
-    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mt-4">
+    <button type="submit"
+            id="submitBtn"
+            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mt-4"
+            disabled>
         Modifier
     </button>
 </form>
