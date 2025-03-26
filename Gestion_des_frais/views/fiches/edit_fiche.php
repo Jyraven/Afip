@@ -35,6 +35,9 @@ if (isset($_GET['source'])) {
             unset($query['id'], $query['source']);
             $returnUrl = 'gestion_fiche.php' . (!empty($query) ? '?' . http_build_query($query) : '');
             break;
+        case 'visiteur':
+            $returnUrl = '../../templates/visiteur.php';
+            break;
         default:
             $returnUrl = 'gestion_fiche.php';
     }
@@ -145,7 +148,7 @@ unset($_SESSION['remboursement_checked'], $_SESSION['motifs_refus_preserve']);
                             <td class="border p-2 text-center"><?= htmlspecialchars($ligne['total']) ?> €</td>
                             <td class="border p-2 text-center">
                                 <?php if ($ligne['justif']): ?>
-                                    <a href="<?= htmlspecialchars($ligne['justif']) ?>" target="_blank" class="text-blue-500 underline">Voir</a>
+                                    <a href="../../<?= htmlspecialchars($ligne['justif']) ?>" target="_blank" class="text-blue-500 underline">Voir</a>
                                 <?php else: ?>Aucun<?php endif; ?>
                             </td>
                             <?php if ($is_comptable && !$is_lecture_seule): ?>

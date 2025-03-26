@@ -195,9 +195,23 @@ $currentQuery = $_SERVER['QUERY_STRING'];
                         <td class="border p-2"><?= htmlspecialchars($fiche['status']) ?></td>
                         <td class="border p-2 text-center">
                             <div class="flex justify-center space-x-4">
-                                 <a href="edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=gestion_fiche&<?= htmlspecialchars($currentQuery) ?>" class="text-blue-600">
+                                <?php
+                                    $isVisiteur = ($_SESSION['user']['role'] === 'Visiteur');
+                                    if ($fiche['status_id'] != 2) {
+                                        // Toujours rediriger vers edit_fiche pour une fiche clôturée ou traitée
+                                        $ficheUrl = "edit_fiche.php?id={$fiche['id_fiches']}&source=gestion_fiche";
+                                    } else {
+                                        // Fiche ouverte : redirection selon le rôle
+                                        $ficheUrl = $isVisiteur 
+                                            ? "fiche_frais.php?id_fiche={$fiche['id_fiches']}&source=visiteur" 
+                                            : "fiche_frais.php?id_fiche={$fiche['id_fiches']}&source=gestion_fiche";
+                                    }
+                                ?>
+                                
+                                <a href="<?= $ficheUrl ?>" class="text-blue-600">
                                     <i class="fas fa-eye"></i>
                                 </a>
+
                                 <a href="edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=gestion_fiche&<?= htmlspecialchars($currentQueryString) ?>" class="delete-btn text-red-600 font-bold">
                                     <i class="fas fa-trash"></i>
                                 </a>

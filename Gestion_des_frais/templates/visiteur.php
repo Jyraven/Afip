@@ -66,14 +66,25 @@ $fiches = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php foreach ($fiches as $fiche): ?>
                     <tr>
                         <td class="border p-2 text-center"><?= $fiche['id_fiches'] ?></td>
-                        <td class="border p-2 text-center"><?= $fiche['op_date'] ?></td>
-                        <td class="border p-2 text-center"><?= $fiche['cl_date'] ?: 'Non clôturé' ?></td>
+                        <td class="border p-2 text-center">
+                            <?= date('d/m/Y', strtotime($fiche['op_date'])) ?>
+                        </td>
+                        <td class="border p-2 text-center">
+                            <?= $fiche['cl_date'] ? date('d/m/Y', strtotime($fiche['cl_date'])) : 'Non clôturé' ?>
+                        </td>
                         <td class="border p-2 text-center"><?= htmlspecialchars($fiche['status']) ?></td>
                         <td class="border p-2 flex justify-center space-x-4">
                             <!-- Bouton Voir la fiche -->
-                            <a href="../views/fiches/edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=visiteur" class="text-blue-600">
+                            <?php
+                                $ficheIsCloturee = ($fiche['status_id'] != 2);
+                                $ficheUrl = $ficheIsCloturee 
+                                    ? "../views/fiches/edit_fiche.php?id=" . $fiche['id_fiches'] . "&source=visiteur"
+                                    : "../views/fiches/fiche_frais.php?id_fiche=" . $fiche['id_fiches'] . "&source=visiteur";
+                            ?>
+                            <a href="<?= $ficheUrl ?>" class="text-blue-600" title="Voir">
                                 <i class="fas fa-eye"></i>
                             </a>
+
                             <!-- Bouton Supprimer la fiche -->
                             <a href="../views/fiches/delete_fiche.php?id=<?= $fiche['id_fiches'] ?>" class="text-red-600 font-bold" title="Supprimer">
                                 <i class="fas fa-trash"></i>
