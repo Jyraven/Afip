@@ -41,10 +41,14 @@ if ($is_comptable) {
     $fiches_a_traiter = $stmt_a_traiter->fetchAll(PDO::FETCH_ASSOC);
 }
 
-$sql_historique = "SELECT f.*, u.user_firstname, u.user_lastname, s.name_status, f.total_frais, f.total_rembourse
+$sql_historique = "SELECT f.*, 
+                          u.user_firstname, u.user_lastname, 
+                          s.name_status, f.total_frais, f.total_rembourse,
+                          uc.user_firstname AS comptable_firstname, uc.user_lastname AS comptable_lastname
                    FROM fiches f
                    LEFT JOIN users u ON f.id_users = u.id_user
                    LEFT JOIN status_fiche s ON f.status_id = s.status_id
+                   LEFT JOIN users uc ON f.id_comptable = uc.id_user
                    WHERE f.status_id = 4";
 
 if ($is_visiteur) {
@@ -98,7 +102,6 @@ if ($is_comptable) {
         </a>
     </div>
 
-    <!-- Fiche attribuees -->
     <?php if ($onglet_actif === 'attribuees' && $is_comptable): ?>
         <table class="w-full border-collapse border bg-white">
             <thead>
@@ -129,8 +132,6 @@ if ($is_comptable) {
                 <?php endforeach; ?>
             </tbody>
         </table>
-
-    <!-- Fiche à traiter -->
     <?php elseif ($onglet_actif === 'a_traiter' && $is_comptable): ?>
         <table class="w-full border-collapse border bg-white">
             <thead>
@@ -163,7 +164,6 @@ if ($is_comptable) {
         </table>
     <?php endif; ?>
 
-    <!-- Historique -->
     <?php if ($onglet_actif === 'historique'): ?>
         <table class="w-full border-collapse border bg-white mt-8">
             <thead>
@@ -173,7 +173,8 @@ if ($is_comptable) {
                     <th class="border p-2">Date d'ouverture</th>
                     <th class="border p-2">Total Frais</th>
                     <th class="border p-2">Total Remboursé</th>
-                    <th class="border p-2 text-center">Actions</th>
+                    <th class="border p-2">Traité par</th>
+                    <th class="border p-2 text-center">Voir</th>
                 </tr>
             </thead>
             <tbody>
@@ -184,6 +185,9 @@ if ($is_comptable) {
                         <td class="border p-2"><?= $fiche['op_date'] ?></td>
                         <td class="border p-2"><?= $fiche['total_frais'] ?> €</td>
                         <td class="border p-2"><?= $fiche['total_rembourse'] ?> €</td>
+                        <td class="border p-2">
+                            <?= htmlspecialchars($fiche['comptable_firstname'] . ' ' . $fiche['comptable_lastname']) ?>
+                        </td>
                         <td class="border p-2 text-center">
                             <a href="edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=historique" class="text-blue-600" title="Voir la fiche">
                                 <i class="fas fa-eye"></i>

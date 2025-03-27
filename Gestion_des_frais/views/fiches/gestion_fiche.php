@@ -207,7 +207,7 @@ $currentQuery = $_SERVER['QUERY_STRING'];
                                             : "fiche_frais.php?id_fiche={$fiche['id_fiches']}&source=gestion_fiche";
                                     }
                                 ?>
-                                
+
                                 <a href="<?= $ficheUrl ?>" class="text-blue-600">
                                     <i class="fas fa-eye"></i>
                                 </a>

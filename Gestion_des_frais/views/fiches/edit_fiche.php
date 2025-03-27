@@ -103,6 +103,18 @@ unset($_SESSION['remboursement_checked'], $_SESSION['motifs_refus_preserve']);
         </div>
     <?php endif; ?>
 
+    <?php if (isset($_GET['success']) && $_GET['success'] == 1): ?>
+        <div class="bg-green-500 text-white px-4 py-2 rounded-md text-center mb-4" id="successMessage">
+            Le remboursement a bien été effectué. Redirection en cours...
+        </div>
+
+        <script>
+            setTimeout(function() {
+                window.location.href = "gestion_remboursement.php?onglet=attribuees";
+            }, 3000); // Redirige après 3 secondes
+        </script>
+    <?php endif; ?>
+
     <div class="max-w-7xl mx-auto p-6 bg-white shadow-md rounded-md relative">
         <h1 class="text-2xl font-bold mb-4 text-center">Fiche de frais n°<?= htmlspecialchars($fiche['id_fiches']); ?></h1>
         <p><strong>ID utilisateur :</strong> <?= htmlspecialchars($fiche['user_id']); ?></p>

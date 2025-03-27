@@ -74,7 +74,7 @@ try {
     ]);
 
     $cnx->commit();
-    header("Location: gestion_remboursement.php?onglet=attribuees&success=fiche_remboursee");
+    header("Location: edit_fiche.php?id=$ficheId&source=gestion_remboursement&success=1");
     exit();
 
 } catch (PDOException $e) {
