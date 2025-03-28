@@ -8,7 +8,8 @@ if (!isset($_SESSION['user'])) {
 }
 
 $user = $_SESSION['user'];
-$isComptable = ($user['role'] === 'Comptable');
+$user_role = $user['role'];
+$isComptable = ($user_role === 'Comptable');
 
 $source = $_GET['source'] ?? '';
 $returnUrl = ($source === 'visiteur') ? '../../templates/visiteur.php' : 'gestion_fiche.php';
@@ -33,6 +34,9 @@ if ($id_fiche) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fiche de frais</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+      <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../public/css/style.css">
     <script>
     const maxFileNameLength = 30;
 
@@ -93,100 +97,133 @@ if ($id_fiche) {
     });
     </script>
 </head>
-<body class="bg-gray-100">
-    <div class="bg-blue-600 text-white py-4 px-8 flex justify-between items-center">
-        <div>
-            <img src="../../public/images/logo.webp" alt="Logo" class="w-32">
-        </div>
-        <div class="flex items-center space-x-4">
-            <span class="text-white"><?= htmlspecialchars($_SESSION['user']['firstname'] . ' ' . $_SESSION['user']['lastname']); ?></span>
-            <img src="assets/profil.jpg" alt="Profil" class="w-10 h-10 rounded-full border-2 border-white">
-        </div>
+<body class="page-admin bg-gray-100 font-body">
+
+<?php
+// Menu selon le rôle
+$menuFile = '';
+
+if ($user_role === 'Administrateur') {
+    $menuFile = '../../includes/menu_admin.php';
+} elseif ($user_role === 'Comptable') {
+    $menuFile = '../../includes/menu_comptable.php';
+} elseif ($user_role === 'Visiteur') {
+    $menuFile = '../../includes/menu_visiteur.php';
+}
+
+if (!empty($menuFile) && file_exists($menuFile)) {
+    include($menuFile);
+}
+?>
+
+<main class="flex-1">
+  <!-- Contenu principal -->
+  <div class="w-full max-w-6xl mx-auto p-8 mt-10 bg-white shadow-md rounded-lg">
+    <h1 class="text-2xl font-title text-gsb-blue mb-6">Fiche de frais</h1>
+
+    <!-- Infos utilisateur -->
+    <div class="mb-6 space-y-1 text-base font-body">
+      <p><strong>Nom :</strong> <?= htmlspecialchars($user['lastname']) ?></p>
+      <p><strong>Prénom :</strong> <?= htmlspecialchars($user['firstname']) ?></p>
+      <p><strong>Matricule :</strong> <?= htmlspecialchars($user['id']) ?></p>
     </div>
 
-    <div class="w-full max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg mt-10">
-        <h1 class="text-2xl font-bold text-gray-700 mb-6">Fiche de frais</h1>
+    <!-- Formulaire -->
+    <form action="insert_frais.php" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="id_fiche" value="<?= htmlspecialchars($id_fiche ?? '') ?>">
 
-        <div class="mb-6">
-            <p class="text-lg"><strong>Nom :</strong> <?= htmlspecialchars($user['lastname']) ?></p>
-            <p class="text-lg"><strong>Prénom :</strong> <?= htmlspecialchars($user['firstname']) ?></p>
-            <p class="text-lg"><strong>Matricule :</strong> <?= htmlspecialchars($user['id']) ?></p>
-        </div>
+      <!-- Date ouverture -->
+      <div class="mb-6">
+        <label for="op_date" class="form-label text-gsb-blue">Date d'ouverture</label>
+        <input type="date" id="op_date" name="op_date" value="<?= date('Y-m-d') ?>" class="form-input" <?= $isComptable ? 'readonly' : '' ?> />
+      </div>
 
-        <form action="insert_frais.php" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="id_fiche" value="<?= htmlspecialchars($id_fiche ?? '') ?>">
-            <div class="mb-4">
-                <label for="op_date" class="block text-lg font-medium text-gray-700">Date d'ouverture</label>
-                <input type="date" id="op_date" name="op_date" value="<?= date('Y-m-d') ?>" class="p-2 border border-gray-300 rounded-md w-full" <?= $isComptable ? 'readonly' : '' ?> />
-            </div>
+      <!-- Tableau -->
+      <table class="w-full text-sm font-body border-collapse border mb-4">
+        <thead class="bg-gsb-blue text-white">
+          <tr>
+            <th class="p-2">Type de frais</th>
+            <th class="p-2">Quantité</th>
+            <th class="p-2">Total</th>
+            <th class="p-2">Date</th>
+            <th class="p-2">Justificatif</th>
+            <th class="p-2"></th>
+          </tr>
+        </thead>
+        <tbody id="expenseTable">
+          <?php foreach ($lignesFrais as $ligne): ?>
+            <tr class="border-b">
+              <!-- Type -->
+              <td class="p-2">
+                <select name="type_frais[]" class="form-input" required <?= $isComptable ? 'disabled' : '' ?>>
+                  <?php foreach ($typeFrais as $type): ?>
+                    <option value="<?= $type['id_tf'] ?>" <?= $type['id_tf'] == $ligne['id_tf'] ? 'selected' : '' ?>>
+                      <?= $type['type'] ?>
+                    </option>
+                  <?php endforeach; ?>
+                </select>
+              </td>
 
-            <table class="w-full mb-4 border-collapse border border-gray-300">
-                <thead>
-                    <tr>
-                        <th class="border border-gray-300 p-1">Type de frais</th>
-                        <th class="border border-gray-300 p-1">Quantité</th>
-                        <th class="border border-gray-300 p-1">Total</th>
-                        <th class="border border-gray-300 p-1">Date</th>
-                        <th class="border border-gray-300 p-5">Justificatif</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="expenseTable">
-                    <?php foreach ($lignesFrais as $ligne): ?>
-                        <tr class="border-t">
-                            <td class="py-2">
-                                <select name="type_frais[]" class="p-2 border border-gray-300 rounded-md w-full" required <?= $isComptable ? 'disabled' : '' ?>>
-                                    <?php foreach ($typeFrais as $type): ?>
-                                        <option value="<?= $type['id_tf'] ?>" <?= $type['id_tf'] == $ligne['id_tf'] ? 'selected' : '' ?>><?= $type['type'] ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </td>
-                            <td class="py-2">
-                                <input type="number" name="quantite[]" value="<?= $ligne['quantité'] ?>" class="p-2 border border-gray-300 rounded-md w-full" required <?= $isComptable ? 'readonly' : '' ?>>
-                            </td>
-                            <td class="py-2">
-                                <div class="relative">
-                                    <input type="text" name="montant[]" value="<?= $ligne['total'] ?>" class="p-2 pr-10 border border-gray-300 rounded-md w-full" required <?= $isComptable ? 'readonly' : '' ?>>
-                                    <span class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">€</span>
-                                </div>
-                            </td>
-                            <td class="py-2">
-                                <input type="date" name="date_frais[]" value="<?= $ligne['sp_date'] ?>" class="p-2 border border-gray-300 rounded-md w-full" required <?= $isComptable ? 'readonly' : '' ?>>
-                            </td>
-                            <td class="py-2">
-                                <?php if (!empty($ligne['justif'])): ?>
-                                    <a href="../../<?= htmlspecialchars($ligne['justif']) ?>" target="_blank" class="text-blue-600 underline">Voir</a><br>
-                                <?php endif; ?>
-                                <?php if (!$isComptable): ?>
-                                    <input type="file" name="justificatif[]" class="p-2 border border-gray-300 rounded-md w-full">
-                                <?php endif; ?>
-                                <input type="hidden" name="justificatif_existant[]" value="<?= htmlspecialchars($ligne['justif']) ?>">
-                                <input type="hidden" name="id_lf[]" value="<?= $ligne['id_lf'] ?>">
-                            </td>
-                            <td class="py-2">
-                                <?php if (!$isComptable): ?>
-                                    <button type="button" onclick="removeExpenseRow(this)" class="text-red-600 font-bold">X</button>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+              <!-- Quantité -->
+              <td class="p-2">
+                <input type="number" name="quantite[]" value="<?= $ligne['quantité'] ?>" class="form-input" required <?= $isComptable ? 'readonly' : '' ?>>
+              </td>
 
-            <?php if (!$isComptable): ?>
-                <button type="button" onclick="addExpenseRow()" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mb-4">Ajouter une ligne</button>
-            <?php endif; ?>
-
-            <div class="flex justify-between mt-4">
-                <a href="<?= $returnUrl ?>" class="bg-gray-500 text-white px-6 py-2 rounded-md hover:bg-gray-600">Retour</a>
-                <div class="flex space-x-4">
-                    <?php if (!$isComptable): ?>
-                        <button type="submit" name="submit_fiche" value="open" class="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600">Soumettre</button>
-                    <?php endif; ?>
-                    <button type="submit" name="submit_fiche" value="close" class="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600">Clôturer</button>
+              <!-- Montant -->
+              <td class="p-2">
+                <div class="relative">
+                  <input type="text" name="montant[]" value="<?= $ligne['total'] ?>" class="form-input pr-10" required <?= $isComptable ? 'readonly' : '' ?>>
+                  <span class="absolute right-3 top-2 text-gray-500">€</span>
                 </div>
-            </div>
-        </form>
-    </div>
+              </td>
+
+              <!-- Date -->
+              <td class="p-2">
+                <input type="date" name="date_frais[]" value="<?= $ligne['sp_date'] ?>" class="form-input" required <?= $isComptable ? 'readonly' : '' ?>>
+              </td>
+
+              <!-- Justificatif -->
+              <td class="p-2 space-y-1">
+                <?php if (!empty($ligne['justif'])): ?>
+                  <a href="../../<?= htmlspecialchars($ligne['justif']) ?>" target="_blank" class="text-gsb-blue underline">Voir</a><br>
+                <?php endif; ?>
+                <?php if (!$isComptable): ?>
+                  <input type="file" name="justificatif[]" class="form-input">
+                <?php endif; ?>
+                <input type="hidden" name="justificatif_existant[]" value="<?= htmlspecialchars($ligne['justif']) ?>">
+                <input type="hidden" name="id_lf[]" value="<?= $ligne['id_lf'] ?>">
+              </td>
+
+              <!-- Supprimer -->
+              <td class="p-2 text-center">
+                <?php if (!$isComptable): ?>
+                  <button type="button" onclick="removeExpenseRow(this)" class="text-red-600 font-bold">X</button>
+                <?php endif; ?>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+
+      <!-- Ajouter ligne -->
+      <?php if (!$isComptable): ?>
+        <button type="button" onclick="addExpenseRow()" class="btn-primary mb-4">Ajouter une ligne</button>
+      <?php endif; ?>
+
+      <!-- Actions -->
+      <div class="flex justify-between items-center mt-6">
+        <a href="<?= $returnUrl ?>" class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600 font-ui">Retour</a>
+        <div class="flex gap-4">
+          <?php if (!$isComptable): ?>
+            <button type="submit" name="submit_fiche" value="open" class="btn-primary">Soumettre</button>
+          <?php endif; ?>
+          <button type="submit" name="submit_fiche" value="close" class="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 font-ui">Clôturer</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</main>
+
+<script src="../../public/js/remboursement.js"></script>
+<?php include('../../includes/footer.php'); ?>
 </body>
-</html>

@@ -47,154 +47,161 @@ $total_a_traiter = $cnx->query($sql_total_a_traiter)->fetchColumn();
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comptable - Tableau de bord</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body class="bg-gray-100">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comptable - Tableau de bord</title>
 
-<!-- Barre de navigation -->
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <!-- Style GSB -->
+  <link rel="stylesheet" href="../public/css/style.css">
+</head>
+<body class="page-admin bg-gray-100 font-body">
+
+<!-- Menu -->
 <?php include('../includes/menu_comptable.php'); ?>
 
-<!-- Section principale -->
-<div class="container mx-auto p-8">
-    <h1 class="text-3xl font-semibold text-center text-blue-600 mb-4">
-        Bonjour <?= htmlspecialchars($_SESSION['user']['firstname'] . ' ' . $_SESSION['user']['lastname']); ?>, vous êtes <strong>Comptable</strong>.
-    </h1>
-    
-    <!-- 📌 Fiches attribuées -->
-    <div class="mt-8 bg-white shadow-md rounded-lg p-6">
+<!-- Contenu -->
+<div class="container mx-auto p-6">
+  <h1 class="text-3xl font-title text-center text-gsb-blue mb-8">
+    Bonjour <?= htmlspecialchars($_SESSION['user']['firstname'] . ' ' . $_SESSION['user']['lastname']); ?>, vous êtes <strong>Comptable</strong>.
+  </h1>
 
-        <!-- Message de succès pour l'attribution' -->
-        <?php if (isset($_GET['success']) && $_GET['success'] === 'fiche_attribuee'): ?>
-            <div id="successMessage" class="relative bg-green-500 text-white px-4 py-2 rounded-md text-center mb-4">
-                La fiche vous a été attribuée avec succès.
-                <button class="absolute top-1 right-3 text-white hover:text-gray-300 font-bold" 
-                    onclick="document.getElementById('successMessage').classList.add('hidden')">
-                    &times;
-                </button>
-            </div>
-        <?php endif; ?>
+  <!-- Fiches attribuées -->
+  <div class="bg-white shadow-md rounded-lg p-6 mb-8">
+    <!-- Messages -->
+    <?php if (isset($_GET['success']) && $_GET['success'] === 'fiche_attribuee'): ?>
+      <div id="successMessage" class="relative bg-green-500 text-white px-4 py-2 rounded-md text-center mb-4">
+        La fiche vous a été attribuée avec succès.
+        <button class="absolute top-1 right-3 text-white hover:text-gray-300 font-bold" 
+          onclick="document.getElementById('successMessage').classList.add('hidden')">
+          &times;
+        </button>
+      </div>
+    <?php endif; ?>
 
-        <?php if (isset($_GET['error'])): ?>
-            <div class="bg-red-500 text-white px-4 py-2 rounded-md text-center mb-4">
-                Une erreur est survenue lors de l'attribution de la fiche.
-            </div>
-        <?php endif; ?>
+    <?php if (isset($_GET['error'])): ?>
+      <div class="bg-red-500 text-white px-4 py-2 rounded-md text-center mb-4">
+        Une erreur est survenue lors de l'attribution de la fiche.
+      </div>
+    <?php endif; ?>
 
-        <!-- Message de succès pour la désattribution -->
-        <?php if (isset($_GET['success']) && $_GET['success'] === 'fiche_desattribuee'): ?>
-            <div id="desattribMessage" class="relative bg-yellow-500 text-white px-4 py-2 rounded-md text-center mb-4">
-                La fiche ne vous est plus attribuée
-                <button class="absolute top-1 right-3 text-white hover:text-gray-300 font-bold" 
-                    onclick="document.getElementById('desattribMessage').classList.add('hidden')">
-                    &times;
-                </button>
-            </div>
-        <?php endif; ?>
+    <?php if (isset($_GET['success']) && $_GET['success'] === 'fiche_desattribuee'): ?>
+      <div id="desattribMessage" class="relative bg-yellow-500 text-white px-4 py-2 rounded-md text-center mb-4">
+        La fiche ne vous est plus attribuée
+        <button class="absolute top-1 right-3 text-white hover:text-gray-300 font-bold" 
+          onclick="document.getElementById('desattribMessage').classList.add('hidden')">
+          &times;
+        </button>
+      </div>
+    <?php endif; ?>
 
-        <?php if (isset($_GET['error']) && $_GET['error'] === 'desattrib_fail'): ?>
-            <div id="desattribError" class="relative bg-red-500 text-white px-4 py-2 rounded-md text-center mb-4">
-                Une erreur est survenue lors de la désattribution de la fiche.
-                <button class="absolute top-1 right-3 text-white hover:text-gray-300 font-bold" 
-                    onclick="document.getElementById('desattribError').classList.add('hidden')">
-                    &times;
-                </button>
-            </div>
-        <?php endif; ?>
+    <?php if (isset($_GET['error']) && $_GET['error'] === 'desattrib_fail'): ?>
+      <div id="desattribError" class="relative bg-red-500 text-white px-4 py-2 rounded-md text-center mb-4">
+        Une erreur est survenue lors de la désattribution de la fiche.
+        <button class="absolute top-1 right-3 text-white hover:text-gray-300 font-bold" 
+          onclick="document.getElementById('desattribError').classList.add('hidden')">
+          &times;
+        </button>
+      </div>
+    <?php endif; ?>
 
-        <h2 class="text-xl font-semibold text-gray-700 mb-4">📁 Fiches attribuées</h2>
-        <table class="w-full border-collapse border">
-            <thead>
-                <tr>
-                    <th class="border p-2">ID</th>
-                    <th class="border p-2">Utilisateur</th>
-                    <th class="border p-2">Date d'ouverture</th>
-                    <th class="border p-2">Statut</th>
-                    <th class="border p-2 text-center">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (!empty($fiches_attribuees)): ?>
-                    <?php foreach ($fiches_attribuees as $fiche): ?>
-                        <tr>
-                            <td class="border p-2"><?= $fiche['id_fiches'] ?></td>
-                            <td class="border p-2"><?= htmlspecialchars($fiche['user_firstname'] . ' ' . $fiche['user_lastname']) ?></td>
-                            <td class="border p-2"><?= $fiche['op_date'] ?></td>
-                            <td class="border p-2"><?= htmlspecialchars($fiche['status']) ?></td>
-                            <td class="border p-2 text-center">
-                                <div class="flex justify-center space-x-4">
-                                    <!-- Bouton Voir -->
-                                    <a href="../views/fiches/edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=comptable" class="text-green-600 hover:text-green-800 text-xl transition">
-                                        <i class="fas fa-money-bill-wave"></i>
-                                    </a>
-                                    <!-- Bouton Retirer l'attribution -->
-                                    <a href="../views/fiches/attribution_fiche.php?action=retirer&id=<?= $fiche['id_fiches'] ?>" 
-                                    class="text-red-600 hover:text-red-800 text-xl transition" title="Retirer l'attribution">
-                                        <i class="fas fa-user-times"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <tr><td colspan="5" class="border p-2 text-center">Aucune fiche attribuée</td></tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
-    </div>
+    <h2 class="text-xl font-ui font-semibold text-gsb-blue-dark mb-4">📁 Fiches attribuées</h2>
 
-    <!-- 📌 Fiches à traiter -->
-    <div class="mt-8 bg-white shadow-md rounded-lg p-6">
-        <h2 class="text-xl font-semibold text-gray-700 mb-4">📌 Fiches à traiter</h2>
-        <table class="w-full border-collapse border">
-        <thead>
-            <tr>
-                <th class="border p-2">ID</th>
-                <th class="border p-2">Utilisateur</th>
-                <th class="border p-2">Date d'ouverture</th>
-                <th class="border p-2">Statut</th>
-                <th class="border p-2 text-center">Actions</th>
+    <table class="w-full border-collapse text-sm font-body table-centered shadow-sm">
+      <thead class="bg-gsb-blue text-white">
+        <tr>
+          <th class="p-3">ID</th>
+          <th class="p-3">Utilisateur</th>
+          <th class="p-3">Date d'ouverture</th>
+          <th class="p-3">Statut</th>
+          <th class="p-3">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php if (!empty($fiches_attribuees)): ?>
+          <?php foreach ($fiches_attribuees as $fiche): ?>
+            <tr class="border-b hover:bg-gray-50 transition">
+              <td class="p-3"><?= $fiche['id_fiches'] ?></td>
+              <td class="p-3"><?= htmlspecialchars($fiche['user_firstname'] . ' ' . $fiche['user_lastname']) ?></td>
+              <td class="p-3"><?= $fiche['op_date'] ?></td>
+              <td class="p-3"><?= htmlspecialchars($fiche['status']) ?></td>
+              <td class="p-3">
+                <div class="flex justify-center space-x-4">
+                  <a href="../views/fiches/edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=comptable"
+                     class="text-green-600 hover:text-green-800 text-xl transition">
+                    <i class="fas fa-money-bill-wave"></i>
+                  </a>
+                  <a href="../views/fiches/attribution_fiche.php?action=retirer&id=<?= $fiche['id_fiches'] ?>"
+                     class="text-red-600 hover:text-red-800 text-xl transition" title="Retirer l'attribution">
+                    <i class="fas fa-user-times"></i>
+                  </a>
+                </div>
+              </td>
             </tr>
-        </thead>
-        <tbody>
-            <?php if (!empty($fiches_a_traiter)): ?>
-                <?php foreach ($fiches_a_traiter as $fiche): ?>
-                    <tr>
-                        <td class="border p-2"><?= $fiche['id_fiches'] ?></td>
-                        <td class="border p-2"><?= htmlspecialchars($fiche['user_firstname'] . ' ' . $fiche['user_lastname']) ?></td>
-                        <td class="border p-2"><?= $fiche['op_date'] ?></td>
-                        <td class="border p-2"><?= htmlspecialchars($fiche['status']) ?></td>
-                        <td class="border p-2 text-center">
-                            <div class="flex justify-center space-x-4">
-                                <!-- Bouton Voir -->
-                                <a href="../views/fiches/edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=comptable" class="text-blue-600">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <!-- Bouton Attribuer -->
-                                <a href="../views/fiches/attribution_fiche.php?action=attribuer&id=<?= $fiche['id_fiches'] ?>"
-                                class="text-green-600 hover:text-green-800 text-xl transition">
-                                    <i class="fas fa-user-check"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <tr><td colspan="5" class="border p-2 text-center">Aucune fiche à traiter</td></tr>
-            <?php endif; ?>
-        </tbody>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <tr><td colspan="5" class="p-3 text-gray-500 italic">Aucune fiche attribuée</td></tr>
+        <?php endif; ?>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Fiches à traiter -->
+  <div class="bg-white shadow-md rounded-lg p-6">
+    <h2 class="text-xl font-ui font-semibold text-gsb-blue-dark mb-4">📌 Fiches à traiter</h2>
+
+    <table class="w-full border-collapse text-sm font-body table-centered shadow-sm">
+      <thead class="bg-gsb-blue text-white">
+        <tr>
+          <th class="p-3">ID</th>
+          <th class="p-3">Utilisateur</th>
+          <th class="p-3">Date d'ouverture</th>
+          <th class="p-3">Statut</th>
+          <th class="p-3">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php if (!empty($fiches_a_traiter)): ?>
+          <?php foreach ($fiches_a_traiter as $fiche): ?>
+            <tr class="border-b hover:bg-gray-50 transition">
+              <td class="p-3"><?= $fiche['id_fiches'] ?></td>
+              <td class="p-3"><?= htmlspecialchars($fiche['user_firstname'] . ' ' . $fiche['user_lastname']) ?></td>
+              <td class="p-3"><?= $fiche['op_date'] ?></td>
+              <td class="p-3"><?= htmlspecialchars($fiche['status']) ?></td>
+              <td class="p-3">
+                <div class="flex justify-center space-x-4">
+                  <a href="../views/fiches/edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=comptable"
+                     class="text-gsb-blue hover:text-gsb-light">
+                    <i class="fas fa-eye"></i>
+                  </a>
+                  <a href="../views/fiches/attribution_fiche.php?action=attribuer&id=<?= $fiche['id_fiches'] ?>"
+                     class="text-green-600 hover:text-green-800 text-xl transition">
+                    <i class="fas fa-user-check"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <tr><td colspan="5" class="p-3 text-gray-500 italic">Aucune fiche à traiter</td></tr>
+        <?php endif; ?>
+      </tbody>
     </table>
 
     <?php if ($total_a_traiter > 5): ?>
-        <div class="mt-4 text-center">
-            <a href="gestion_remboursement.php" class="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition">
-                Voir plus
-            </a>
-        </div>
+      <div class="mt-6 text-center">
+      <a href="../views/fiches/gestion_remboursement.php?onglet=a_traiter" class="btn-primary inline-flex items-center justify-center h-10 px-6">Voir plus</a>
+      </div>
     <?php endif; ?>
+  </div>
 </div>
+
+<?php include('../includes/footer.php'); ?>
+
 </body>
 </html>

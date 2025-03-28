@@ -49,28 +49,37 @@ if ($_POST) {
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion</title>
-    <link href="public/css/style.css" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connexion | GSB</title>
+
+  <!-- Polices Google -->
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Rajdhani:wght@600&family=Rubik:wght@500&display=swap" rel="stylesheet">
+
+  <!-- CSS Custom -->
+  <link href="/Github/Afip/Gestion_des_frais/public/css/style.css" rel="stylesheet">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="flex items-center justify-center min-h-screen login-page">
-    <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
-        <img src="public/images/logo.webp" alt="Logo" class="w-52 mx-auto mb-6">
-        <h2 class="text-2xl text-center text-blue-600 font-semibold mb-6">Connexion</h2>
-        <form action="index.php?action=login" method="post">
-            <div class="mb-4">
-                <label for="userEmail" class="block text-sm font-medium text-gray-700">Adresse e-mail</label>
-                <input type="email" name="email" id="userEmail" class="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Entrez votre email" required>
-            </div>
-            <div class="mb-6">
-                <label for="userPassword" class="block text-sm font-medium text-gray-700">Mot de passe</label>
-                <input type="password" name="password" id="userPassword" class="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Entrez votre mot de passe" required>
-                <a href="forgot_password.php" class="text-muted small text-blue-500 hover:text-blue-700 mt-2 inline-block">Mot de passe oublié ?</a>
-            </div>
-            <button type="submit" class="w-full py-3 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Se connecter</button>
-        </form>
-    </div>
+<body class="page-login font-body">
+  <div class="login-wrapper w-full max-w-md p-8 rounded-xl shadow-lg">
+    <h2 class="text-3xl text-center text-blue-700 font-title mb-6">Connexion</h2>
+
+    <form action="../Gestion_des_frais/index.php?action=login" method="post">
+      <div class="mb-4 text-left">
+        <label for="userEmail" class="form-label text-gray-800">Adresse e-mail</label>
+        <input type="email" name="email" id="userEmail" class="form-input" placeholder="Entrez votre email" required />
+      </div>
+
+      <div class="mb-6 text-left">
+        <label for="userPassword" class="form-label text-gray-800">Mot de passe</label>
+        <input type="password" name="password" id="userPassword" class="form-input" placeholder="Entrez votre mot de passe" required />
+        <a href="../forgot_password.php" class="text-sm text-blue-600 hover:underline mt-2 inline-block">Mot de passe oublié ?</a>
+      </div>
+
+      <button type="submit" class="btn-primary w-full">Se connecter</button>
+    </form>
+  </div>
 </body>
 </html>

@@ -123,96 +123,102 @@ $currentQuery = $_SERVER['QUERY_STRING'];
     <title>Gestion des Fiches de Frais</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+      <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../public/css/style.css">
 </head>
-<body class="bg-gray-100">
+<body class="page-admin bg-gray-100 font-body">
 
-    <?php
-    // Détermination du menu à inclure selon le rôle de l'utilisateur
-    $menuFile = '';
+<?php
+// Menu selon le rôle
+$menuFile = '';
 
-    if ($user_role === 'Administrateur') {
-        $menuFile = '../../includes/menu_admin.php';
-    } elseif ($user_role === 'Comptable') {
-        $menuFile = '../../includes/menu_comptable.php';
-    } elseif ($user_role === 'Visiteur') {
-        $menuFile = '../../includes/menu_visiteur.php';
-    }
+if ($user_role === 'Administrateur') {
+    $menuFile = '../../includes/menu_admin.php';
+} elseif ($user_role === 'Comptable') {
+    $menuFile = '../../includes/menu_comptable.php';
+} elseif ($user_role === 'Visiteur') {
+    $menuFile = '../../includes/menu_visiteur.php';
+}
 
-    if (!empty($menuFile) && file_exists($menuFile)) {
-        include($menuFile);
-    }
-    ?>
+if (!empty($menuFile) && file_exists($menuFile)) {
+    include($menuFile);
+}
+?>
 
-    
-    <div class="p-8">
-        <form method="get" class="flex space-x-4 mb-6">
-            <input type="hidden" name="page" value="1">
-            
-            <!-- Filtre sur le tri -->
-            <select name="sortBy" class="p-2 border rounded">
-                <option value="id_fiches" <?= $sortBy == 'id_fiches' ? 'selected' : '' ?>>ID</option>
-                <option value="op_date" <?= $sortBy == 'op_date' ? 'selected' : '' ?>>Date d'ouverture</option>
-                <option value="cl_date" <?= $sortBy == 'cl_date' ? 'selected' : '' ?>>Date de clôture</option>
+<div class="p-8">
+    <h1 class="text-2xl font-title text-gsb-blue mb-6">Gestion des fiches de frais</h1>
+
+    <form method="get" class="flex flex-wrap justify-between items-end mb-6 gap-y-4">
+        <input type="hidden" name="page" value="1">
+
+        <!-- Bloc gauche : filtres + bouton -->
+        <div class="flex flex-wrap items-end gap-4">
+            <select name="sortBy" class="form-input w-36 h-[40px] text-sm">
+            <option value="id_fiches" <?= $sortBy == 'id_fiches' ? 'selected' : '' ?>>ID</option>
+            <option value="op_date" <?= $sortBy == 'op_date' ? 'selected' : '' ?>>Date d'ouverture</option>
+            <option value="cl_date" <?= $sortBy == 'cl_date' ? 'selected' : '' ?>>Date de clôture</option>
             </select>
 
-            <!-- Filtre sur l'ordre -->
-            <select name="order" class="p-2 border rounded">
-                <option value="asc" <?= $order == 'asc' ? 'selected' : '' ?>>Croissant</option>
-                <option value="desc" <?= $order == 'desc' ? 'selected' : '' ?>>Décroissant</option>
+            <select name="order" class="form-input w-36 h-[40px] text-sm">
+            <option value="asc" <?= $order == 'asc' ? 'selected' : '' ?>>Croissant</option>
+            <option value="desc" <?= $order == 'desc' ? 'selected' : '' ?>>Décroissant</option>
             </select>
 
-            <!-- Filtre sur le statut -->
-            <select name="status" class="p-2 border rounded">
-                <option value="">Tous les statuts</option>
-                <option value="Ouverte" <?= $status == 'Ouverte' ? 'selected' : '' ?>>Fiches Ouvertes</option>
-                <option value="Clôturée" <?= $status == 'Clôturée' ? 'selected' : '' ?>>Fiches Clôturées</option>
+            <select name="status" class="form-input w-36 h-[40px] text-sm">
+            <option value="">Tous les statuts</option>
+            <option value="Ouverte" <?= $status == 'Ouverte' ? 'selected' : '' ?>>Fiches Ouvertes</option>
+            <option value="Clôturée" <?= $status == 'Clôturée' ? 'selected' : '' ?>>Fiches Clôturées</option>
             </select>
 
-            <!-- Champ de recherche -->
-            <input type="text" name="search" placeholder="Recherche..." value="<?= htmlspecialchars($search) ?>" class="p-2 border rounded">
-            
-            <button type="submit" class="bg-blue-600 text-white p-2 rounded">Filtrer</button>
-        </form>
+            <button type="submit" class="btn-primary h-[40px] text-sm">Filtrer</button>
+        </div>
 
-        <table class="w-full border-collapse border">
-            <thead>
+        <!-- Bloc droite : champ de recherche -->
+        <div class="flex">
+            <input type="text" name="search" placeholder="Recherche..." value="<?= htmlspecialchars($search) ?>" class="form-input w-52 h-[40px] text-sm" />
+        </div>
+    </form>
+
+
+    <!-- Tableau -->
+    <div class="bg-white rounded shadow-md overflow-hidden">
+        <table class="w-full border-collapse text-sm font-body">
+            <thead class="bg-gsb-blue text-white">
                 <tr>
-                    <th class="border p-2">ID</th>
-                    <th class="border p-2">Utilisateur</th>
-                    <th class="border p-2">Date d'ouverture</th>
-                    <th class="border p-2">Date de clôture</th>
-                    <th class="border p-2">Statut</th>
-                    <th class="border p-2">Actions</th>
+                    <th class="p-3 text-left">ID</th>
+                    <th class="p-3 text-left">Utilisateur</th>
+                    <th class="p-3 text-left">Date d'ouverture</th>
+                    <th class="p-3 text-left">Date de clôture</th>
+                    <th class="p-3 text-left">Statut</th>
+                    <th class="p-3 text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($fiches as $fiche): ?>
-                    <tr>
-                        <td class="border p-2"><?= $fiche['id_fiches'] ?></td>
-                        <td class="border p-2"><?= htmlspecialchars($fiche['user_firstname'] . ' ' . $fiche['user_lastname']) ?></td>
-                        <td class="border p-2"><?= date('d/m/Y', strtotime($fiche['op_date'])) ?></td>
-                        <td class="border p-2"><?= $fiche['cl_date'] ? date('d/m/Y', strtotime($fiche['cl_date'])) : 'Non clôturé' ?></td>
-                        <td class="border p-2"><?= htmlspecialchars($fiche['status']) ?></td>
-                        <td class="border p-2 text-center">
+                    <tr class="border-b hover:bg-gray-50 transition">
+                        <td class="p-3"><?= $fiche['id_fiches'] ?></td>
+                        <td class="p-3"><?= htmlspecialchars($fiche['user_firstname'] . ' ' . $fiche['user_lastname']) ?></td>
+                        <td class="p-3"><?= date('d/m/Y', strtotime($fiche['op_date'])) ?></td>
+                        <td class="p-3"><?= $fiche['cl_date'] ? date('d/m/Y', strtotime($fiche['cl_date'])) : 'Non clôturé' ?></td>
+                        <td class="p-3"><?= htmlspecialchars($fiche['status']) ?></td>
+                        <td class="p-3 text-center">
                             <div class="flex justify-center space-x-4">
                                 <?php
                                     $isVisiteur = ($_SESSION['user']['role'] === 'Visiteur');
                                     if ($fiche['status_id'] != 2) {
-                                        // Toujours rediriger vers edit_fiche pour une fiche clôturée ou traitée
                                         $ficheUrl = "edit_fiche.php?id={$fiche['id_fiches']}&source=gestion_fiche";
                                     } else {
-                                        // Fiche ouverte : redirection selon le rôle
                                         $ficheUrl = $isVisiteur 
                                             ? "fiche_frais.php?id_fiche={$fiche['id_fiches']}&source=visiteur" 
                                             : "fiche_frais.php?id_fiche={$fiche['id_fiches']}&source=gestion_fiche";
                                     }
                                 ?>
 
-                                <a href="<?= $ficheUrl ?>" class="text-blue-600">
+                                <a href="<?= $ficheUrl ?>" class="text-gsb-blue hover:text-gsb-light">
                                     <i class="fas fa-eye"></i>
                                 </a>
 
-                                <a href="edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=gestion_fiche&<?= htmlspecialchars($currentQueryString) ?>" class="delete-btn text-red-600 font-bold">
+                                <a href="edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=gestion_fiche&<?= htmlspecialchars($currentQueryString) ?>" class="text-red-600 hover:text-red-800">
                                     <i class="fas fa-trash"></i>
                                 </a>
                             </div>
@@ -221,13 +227,16 @@ $currentQuery = $_SERVER['QUERY_STRING'];
                 <?php endforeach; ?>
             </tbody>
         </table>
-
-        <div class="mt-4 flex justify-center">
-            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                <a href="<?= $baseUrl ?>&page=<?= $i ?>" class="px-4 py-2 <?= $i == $page ? 'bg-blue-600 text-white' : 'bg-gray-200' ?> rounded"><?= $i ?></a>
-            <?php endfor; ?>
-        </div>
     </div>
 
+    <!-- Pagination -->
+    <div class="mt-6 flex justify-center gap-2">
+        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <a href="<?= $baseUrl ?>&page=<?= $i ?>" class="px-4 py-2 rounded font-ui text-sm <?= $i == $page ? 'bg-gsb-blue text-white' : 'bg-gray-200 hover:bg-gray-300' ?>">
+                <?= $i ?>
+            </a>
+        <?php endfor; ?>
+    </div>
+</div>
+<?php include('../../includes/footer.php'); ?>
 </body>
-</html>

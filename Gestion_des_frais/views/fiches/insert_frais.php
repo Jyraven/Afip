@@ -94,54 +94,26 @@ if ($_POST) {
 
 <?php if ($successMessage): ?>
     <!DOCTYPE html>
-    <html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <html lang="fr">
+        <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Succès</title>
-        <style>
-            .modal {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.5);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 9999;
-            }
-            .modal-content {
-                background: #fff;
-                padding: 20px;
-                border-radius: 10px;
-                text-align: center;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            }
-            .modal-content h1 {
-                color: #4CAF50;
-            }
-            .modal-content button {
-                background: #4CAF50;
-                color: #fff;
-                border: none;
-                padding: 10px 20px;
-                border-radius: 5px;
-                cursor: pointer;
-            }
-            .modal-content button:hover {
-                background: #45a049;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="modal">
-            <div class="modal-content">
-                <h1><?php echo $successMessage; ?></h1>
-                <button onclick="window.location.href='gestion_fiche.php';">Retour</button>
-            </div>
+
+        <!-- Tailwind + Custom Style -->
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../public/css/style.css">
+        </head>
+        <body class="bg-black bg-opacity-50 flex items-center justify-center min-h-screen font-body">
+
+        <div class="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
+            <h1 class="text-2xl text-green-600 font-title mb-4"><?= $successMessage; ?></h1>
+
+            <button onclick="window.location.href='gestion_fiche.php';"
+                    class="btn-primary px-6 py-2 mt-4 inline-block">
+            Retour
+            </button>
         </div>
-    </body>
-    </html>
+        </body>
+        </html>
 <?php endif; ?>

@@ -1,49 +1,173 @@
-/* Styles globaux */
-body, html {
-    height: 100%;
-    margin: 0;
-    font-family: 'Arial', sans-serif;
-    background: #697fad;
+
+/* ---------------------- */
+/* Login page */
+/* ---------------------- */
+.page-login {
     display: flex;
     justify-content: center;
     align-items: center;
+    background-image: url('/Github/Afip/Gestion_des_frais/public/images/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    padding: 2rem; /* évite que le contenu touche les bords sur petits écrans */
 }
 
-/* Container de la page */
-.container {
-    width: 90%;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.page-login .login-wrapper {
+    background: rgba(255, 255, 255, 0.60); /* blanc légèrement transparent */
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    width: 100%;
+    max-width: 400px;
+}
+
+.page-login .form-input {
+  padding: 0.75rem 1rem;
+  width: 100%;
+  max-width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1rem;
+  background-color: white;
+  color: #333;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.page-login .form-input:focus {
+  outline: none;
+  border-color: var(--gsb-blue);
+  box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.2);
+}
+
+/* ---------------------- */
+/* Typographie GSB */
+/* ---------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Rajdhani:wght@600&family=Rubik:wght@500&display=swap');
+
+.font-title {
+    font-family: 'Rajdhani', sans-serif;
+}
+
+.font-ui {
+    font-family: 'Rubik', sans-serif;
+}
+
+.font-body {
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* ---------------------- */
+/* Composants formulaire GSB */
+/* ---------------------- */
+.form-label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.25rem;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.form-input {
+    height: 40px; /* Harmonisé avec bouton */
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem; /* text-sm */
+    font-family: 'Open Sans', sans-serif;
+    border-radius: 0.5rem;
+    border: 1px solid #d1d5db;
     background-color: white;
-    text-align: center;
-}
-
-
-
-/* Styles pour le comptable */
-
-/* Styles pour le visiteur */
-
-/* Style pour le bouton de déconnexion */
-.logout-btn {
-    background-color: #bebebe;
     color: #333;
-    border: 2px solid #333;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-    transition: all 0.3s ease;
-}
+    box-sizing: border-box;
+  }   
+  
+  .form-input:focus {
+    outline: none;
+    border-color: var(--gsb-blue);
+    box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.2);
+    
+  }  
 
-.logout-btn:hover {
-    background-color: #333;
+  .btn-primary {
+    height: 40px;
+    padding: 0 1rem;
+    font-size: 0.875rem; /* text-sm */
+    font-family: 'Rubik', sans-serif;
+    font-weight: 500;
+    background-color: var(--gsb-blue);
     color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+.btn-primary:hover {
+    background-color: #1e40af;
 }
 
-.chnge {
-    color: #843065;
+
+/* ---------------------- */
+/*    Tableaux centrés    */
+/* ---------------------- */
+.table-centered td,
+.table-centered th {
+    text-align: center;
+    vertical-align: middle;
 }
+
+/* ---------------------- */
+/* Couleurs GSB personnalisées */
+/* ---------------------- */
+:root {
+    --gsb-blue-dark: #0D1C2E;
+    --gsb-blue: #1E3A8A;
+    --gsb-blue-light: #3B82F6;
+    --gsb-hover: #facc15;     
+}
+
+.bg-gsb-blue {
+    background-color: var(--gsb-blue);
+}
+
+.bg-gsb-dark {
+    background-color: var(--gsb-blue-dark);
+}
+
+.text-gsb-blue {
+    color: var(--gsb-blue);
+}
+
+.text-gsb-light {
+    color: var(--gsb-blue-light);
+}
+
+.hover\:text-gsb-hover:hover {
+    color: var(--gsb-hover);
+}
+
+/* ====================== */
+/* Footer fixe bas écran  */
+/* ====================== */
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+footer.footer-auto {
+    margin-top: auto;
+}
+
+main {
+    flex: 1;
+  }
+  
