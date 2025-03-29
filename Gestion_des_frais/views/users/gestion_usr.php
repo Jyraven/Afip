@@ -6,7 +6,7 @@ $search = $cnx->query("
     SELECT users.id_user, users.user_firstname, users.user_lastname, users.user_email, roles.role
     FROM users
     LEFT JOIN roles ON users.id_role = roles.id_role
-    ORDER BY users.user_lastname ASC
+    ORDER BY users.id_user ASC
 ")->fetchAll();
 ?>
 
