@@ -30,7 +30,7 @@ $basePath = (in_array($currentPage, ['admin.php'])) ? "../" : "../../";
         <?php if ($currentPage !== 'gestion_fiche.php'): ?>
             <a href="<?= $basePath ?>views/fiches/gestion_fiche.php"
                 class="hover:text-gsb-light transition <?= $currentPage === 'gestion_fiche.php' ? 'font-bold underline' : '' ?>">
-                Fiches
+                Gestion des fiches
             </a>
         <?php endif; ?>
     </nav>

@@ -77,7 +77,9 @@ if ($_POST) {
             }
 
             $cnx->commit();
-            $successMessage = "Fiche de frais ajoutée avec succès !";
+            $successMessage = ($_POST['submit_fiche'] == 'close') 
+            ? "Votre fiche de frais a été cloturée" 
+            : "Fiche de frais ajoutée avec succès !";
 
         } catch (Exception $e) {
             $cnx->rollBack();

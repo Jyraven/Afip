@@ -104,7 +104,7 @@ if ($is_comptable) {
       Historique
     </a>
   </div>
-
+<!-- Fiches attribuées -->
   <?php if ($onglet_actif === 'attribuees' && $is_comptable): ?>
     <table class="w-full border-collapse text-sm table-auto shadow-sm">
       <thead class="bg-gsb-blue text-white">
@@ -124,17 +124,20 @@ if ($is_comptable) {
             <td class="p-3"><?= $fiche['op_date'] ?></td>
             <td class="p-3"><?= htmlspecialchars($fiche['name_status']) ?></td>
             <td class="p-3 text-center">
-              <a href="edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=gestion_remboursement&onglet=attribuees" class="text-gsb-blue hover:text-gsb-light">
-                <i class="fas fa-eye"></i>
-              </a>
-              <a href="attribution_fiche.php?action=retirer&id=<?= $fiche['id_fiches'] ?>&source=gestion_remboursement" class="text-red-600 hover:text-red-800">
-                <i class="fas fa-user-times"></i>
-              </a>
+              <div class="flex justify-center space-x-4">
+                <a href="edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=gestion_remboursement&onglet=attribuees" class="text-green-600 hover:text-green-800 text-lg transition">
+                <i class="fas fa-money-bill-wave"></i>
+                </a>
+                <a href="attribution_fiche.php?action=retirer&id=<?= $fiche['id_fiches'] ?>&source=gestion_remboursement" class="text-red-600 hover:text-red-800 text-lg transition">
+                  <i class="fas fa-user-times"></i>
+                </a>
+              </div>
             </td>
           </tr>
         <?php endforeach; ?>
       </tbody>
     </table>
+  <!-- Fiches à traiter -->
   <?php elseif ($onglet_actif === 'a_traiter' && $is_comptable): ?>
     <table class="w-full border-collapse text-sm table-auto shadow-sm">
       <thead class="bg-gsb-blue text-white">
@@ -154,19 +157,21 @@ if ($is_comptable) {
             <td class="p-3"><?= $fiche['op_date'] ?></td>
             <td class="p-3"><?= htmlspecialchars($fiche['name_status']) ?></td>
             <td class="p-3 text-center">
-              <a href="edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=gestion_remboursement&onglet=a_traiter" class="text-gsb-blue hover:text-gsb-light">
-                <i class="fas fa-eye"></i>
-              </a>
-              <a href="attribution_fiche.php?action=attribuer&id=<?= $fiche['id_fiches'] ?>&source=gestion_remboursement" class="text-green-600 hover:text-green-800">
-                <i class="fas fa-user-check"></i>
-              </a>
+              <div class="flex justify-center space-x-4">
+                <a href="edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=gestion_remboursement&onglet=a_traiter" class="text-gsb-blue hover:text-gsb-light text-lg transition">
+                  <i class="fas fa-eye"></i>
+                </a>
+                <a href="attribution_fiche.php?action=attribuer&id=<?= $fiche['id_fiches'] ?>&source=gestion_remboursement" class="text-green-600 hover:text-green-800 text-lg transition">
+                  <i class="fas fa-user-check"></i>
+                </a>
+              </div>
             </td>
           </tr>
         <?php endforeach; ?>
       </tbody>
     </table>
   <?php endif; ?>
-
+<!-- Historique -->
   <?php if ($onglet_actif === 'historique'): ?>
     <table class="w-full border-collapse text-sm table-auto shadow-sm mt-6">
       <thead class="bg-gsb-blue text-white">
@@ -190,7 +195,7 @@ if ($is_comptable) {
             <td class="p-3"><?= $fiche['total_rembourse'] ?> €</td>
             <td class="p-3"><?= htmlspecialchars($fiche['comptable_firstname'] . ' ' . $fiche['comptable_lastname']) ?></td>
             <td class="p-3 text-center">
-              <a href="edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=historique" class="text-gsb-blue hover:text-gsb-light" title="Voir la fiche">
+              <a href="edit_fiche.php?id=<?= $fiche['id_fiches'] ?>&source=historique" class="text-gsb-blue hover:text-gsb-light text-lg transition" title="Voir la fiche">
                 <i class="fas fa-eye"></i>
               </a>
             </td>

@@ -29,17 +29,21 @@ $status = $_GET['status'] ?? ($is_comptable ? 'Ouverte' : '');
 $search = $_GET['search'] ?? '';
 
 // Construction de la requête SQL avec filtres
-$sql = "SELECT f.*, u.user_firstname, u.user_lastname, s.name_status as status
+$sql = "SELECT f.*, 
+               u.user_firstname, u.user_lastname, 
+               s.name_status as status,
+               c.user_firstname AS comptable_firstname, 
+               c.user_lastname AS comptable_lastname
         FROM fiches f
         LEFT JOIN users u ON f.id_users = u.id_user
         LEFT JOIN status_fiche s ON f.status_id = s.status_id
+        LEFT JOIN users c ON f.id_comptable = c.id_user
         WHERE 1=1";
 
 // Si l'utilisateur est un visiteur, il ne voit que ses propres fiches
 if ($user_role === 'Visiteur') {
-    $sql .= " AND f.id_users = :user_id";
+    $sql .= " AND f.id_users = :user_id AND f.status_id != 4";
 }
-
 // Exclure les fiches "En cours de traitement" pour un comptable
 if ($is_comptable) {
     $sql .= " AND f.status_id != 3";
@@ -168,6 +172,7 @@ if (!empty($menuFile) && file_exists($menuFile)) {
             <option value="">Tous les statuts</option>
             <option value="Ouverte" <?= $status == 'Ouverte' ? 'selected' : '' ?>>Fiches Ouvertes</option>
             <option value="Clôturée" <?= $status == 'Clôturée' ? 'selected' : '' ?>>Fiches Clôturées</option>
+            <option value="En cours de traitement" <?= $status == 'En cours de traitement' ? 'selected' : '' ?>>En cours de traitement</option>
             </select>
 
             <button type="submit" class="btn-primary h-[40px] text-sm">Filtrer</button>
@@ -190,6 +195,9 @@ if (!empty($menuFile) && file_exists($menuFile)) {
                     <th class="p-3 text-left">Date d'ouverture</th>
                     <th class="p-3 text-left">Date de clôture</th>
                     <th class="p-3 text-left">Statut</th>
+                    <?php if ($user_role === 'Administrateur'): ?>
+                        <th class="p-3 text-left">Traité par</th>
+                    <?php endif; ?>
                     <th class="p-3 text-center">Actions</th>
                 </tr>
             </thead>
@@ -201,6 +209,15 @@ if (!empty($menuFile) && file_exists($menuFile)) {
                         <td class="p-3"><?= date('d/m/Y', strtotime($fiche['op_date'])) ?></td>
                         <td class="p-3"><?= $fiche['cl_date'] ? date('d/m/Y', strtotime($fiche['cl_date'])) : 'Non clôturé' ?></td>
                         <td class="p-3"><?= htmlspecialchars($fiche['status']) ?></td>
+                        
+                        <?php if ($user_role === 'Administrateur'): ?>
+                            <td class="p-3">
+                                <?= !empty($fiche['comptable_firstname']) 
+                                    ? htmlspecialchars($fiche['comptable_firstname'] . ' ' . $fiche['comptable_lastname']) 
+                                    : '-' ?>
+                            </td>
+                        <?php endif; ?>
+
                         <td class="p-3 text-center">
                             <div class="flex justify-center space-x-4">
                                 <?php

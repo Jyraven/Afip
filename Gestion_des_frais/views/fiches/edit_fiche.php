@@ -228,12 +228,12 @@ if (!empty($menuFile) && file_exists($menuFile)) {
     <?php endif; ?>
   </form>
 
-  <!-- Bouton retour -->
-  <div class="absolute bottom-6 right-6">
-    <a href="<?= $returnUrl ?>" class="bg-gray-500 text-white px-4 py-2 rounded-md font-ui hover:bg-gray-600 transition">
-      Retour
-    </a>
-  </div>
+        <!-- Bouton retour -->
+        <div class="mt-8 text-right">
+          <a href="<?= $returnUrl ?>" class="bg-gray-500 text-white px-6 py-2 rounded-md font-ui hover:bg-gray-600 transition">
+            Retour
+          </a>
+        </div>
 </div>
 
 <script src="../../public/js/remboursement.js"></script>

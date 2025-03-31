@@ -17,7 +17,8 @@ $sql = "SELECT f.*, s.name_status AS status
         FROM fiches f
         LEFT JOIN status_fiche s ON f.status_id = s.status_id
         WHERE f.id_users = :id_user
-        ORDER BY f.op_date DESC"; // Trier par date d'ouverture
+        AND f.status_id IN (2, 3)
+        ORDER BY f.op_date DESC";
 
 $stmt = $cnx->prepare($sql);
 $stmt->bindValue(':id_user', $user_id, PDO::PARAM_INT);

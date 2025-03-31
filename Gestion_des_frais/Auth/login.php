@@ -75,7 +75,7 @@ if ($_POST) {
       <div class="mb-6 text-left">
         <label for="userPassword" class="form-label text-gray-800">Mot de passe</label>
         <input type="password" name="password" id="userPassword" class="form-input" placeholder="Entrez votre mot de passe" required />
-        <a href="../forgot_password.php" class="text-sm text-blue-600 hover:underline mt-2 inline-block">Mot de passe oublié ?</a>
+        <!--<a href="../forgot_password.php" class="text-sm text-blue-600 hover:underline mt-2 inline-block">Mot de passe oublié ?</a>-->
       </div>
 
       <button type="submit" class="btn-primary w-full">Se connecter</button>

@@ -117,9 +117,8 @@ if (!empty($menuFile) && file_exists($menuFile)) {
 ?>
 
 <main class="flex-1">
-  <!-- Contenu principal -->
-  <div class="w-full max-w-6xl mx-auto p-8 mt-10 bg-white shadow-md rounded-lg">
-
+<!-- Contenu principal -->
+<div class="w-full max-w-6xl mx-auto p-8 mt-10 bg-white shadow-md rounded-lg overflow-x-auto">
     <h1 class="text-2xl font-title text-gsb-blue mb-6">Fiche de frais</h1>
 
     <!-- Infos utilisateur -->
@@ -211,13 +210,15 @@ if (!empty($menuFile) && file_exists($menuFile)) {
         <button type="button" onclick="addExpenseRow()" class="btn-primary mb-4">Ajouter une ligne</button>
       <?php endif; ?>
 
-      <!-- Bouton retour -->
-          <div class="mt-8 text-right">
-            <a href="<?= $returnUrl ?>" class="bg-gray-500 text-white px-6 py-2 rounded-md font-ui hover:bg-gray-600 transition">
-              Retour
-            </a>
-          </div>
-
+      <!-- Actions -->
+      <div class="flex justify-between items-center mt-6">
+        <a href="<?= $returnUrl ?>" class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600 font-ui">Retour</a>
+        <div class="flex gap-4">
+          <?php if (!$isComptable): ?>
+            <button type="submit" name="submit_fiche" value="open" class="btn-primary">Soumettre</button>
+          <?php endif; ?>
+          <button type="submit" name="submit_fiche" value="close" class="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 font-ui">Clôturer</button>
+        </div>
       </div>
     </form>
   </div>
