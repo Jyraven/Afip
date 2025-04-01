@@ -1,68 +1,68 @@
-# 💼 Application GSB - Gestion des frais
+# 💼 GSB Application – Expense Management
 
-> Projet réalisé dans le cadre du **BTS SIO SLAM – Épreuve E6**  
-> Développement d'une application web interne pour l'entreprise fictive **Galaxy Swiss Bourdin**
-
----
-
-## 📌 Contexte
-
-L’entreprise GSB emploie des visiteurs médicaux en déplacement régulier.  
-Afin de simplifier la gestion des notes de frais, j’ai conçu une application web permettant :
-
-- La **déclaration** des frais en ligne (avec justificatifs)
-- Le **traitement** des fiches par des comptables
-- Une **gestion des utilisateurs** par des administrateurs
-- Une **interface sécurisée** et adaptée à chaque rôle
+> Project carried out as part of the **BTS SIO SLAM – E6 Exam**  
+> Development of an internal web application for the fictional company **Galaxy Swiss Bourdin**
 
 ---
 
-## 🧭 Notice d’utilisation
+## 📌 Context
 
-### 🔐 Connexion
+The GSB company employs medical representatives who frequently travel.  
+To simplify expense report management, I developed a web application that allows:
 
-Chaque utilisateur possède un identifiant et un mot de passe en fonction de son rôle.
-
-#### 👤 **Visiteurs**
-| Email                            | Mot de passe |
-|----------------------------------|--------------|
-| nicolas.barbet@gsb.com           | `2`          |
-| bob.epoleur@gsb.com              | `bob`        |
-
-#### 🧾 **Comptables**
-| Email                            | Mot de passe |
-|----------------------------------|--------------|
-| sophie.delrah@gsb.com            | `3`          |
-| alice.merveille@gsb.com          | `alice`      |
-
-#### 🛠️ **Administrateur**
-| Email                            | Mot de passe |
-|----------------------------------|--------------|
-| miguel.janos@gsb.com             | `1`          |
+- **Submitting** expenses online (with receipts)
+- **Processing** reports by accountants
+- **User management** by administrators
+- A **secure interface** tailored to each role
 
 ---
 
-## 🧰 Stack Technique
+## 🧭 User Guide
 
-- **Backend** : PHP 8 / MySQL / PDO
-- **Frontend** : HTML5 / CSS3 / JavaScript
-- **UI** : Tailwind CSS
-- **Librairies** : Chart.js / Font Awesome
-- **Outils** : GitHub / VS Code / Trello / PhpMyAdmin
+### 🔐 Login
+
+Each user has a username and password based on their role.
+
+#### 👤 **Visitors**
+| Email                            | Password |
+|----------------------------------|----------|
+| nicolas.barbet@gsb.com           | `2`      |
+| bob.epoleur@gsb.com              | `bob`    |
+
+#### 🧾 **Accountants**
+| Email                            | Password |
+|----------------------------------|----------|
+| sophie.delrah@gsb.com            | `3`      |
+| alice.merveille@gsb.com          | `alice`  |
+
+#### 🛠️ **Administrator**
+| Email                            | Password |
+|----------------------------------|----------|
+| miguel.janos@gsb.com             | `1`      |
 
 ---
 
-## 📁 Arborescence simplifiée
+## 🧰 Technical Stack
+
+- **Backend**: PHP 8 / MySQL / PDO  
+- **Frontend**: HTML5 / CSS3 / JavaScript  
+- **UI**: Tailwind CSS  
+- **Libraries**: Chart.js / Font Awesome  
+- **Tools**: GitHub / VS Code / Trello / PhpMyAdmin
+
+---
+
+## 📁 Simplified Directory Structure
 
 ```bash
 /Gestion_des_frais/
-├── /Auth/           → Connexion & sécurité
-├── /includes/       → Éléments partagés
-├── /templates/      → Blocs HTML
-├── /views/          → Interfaces par rôle
+├── /Auth/           → Login & security
+├── /includes/       → Shared components
+├── /templates/      → HTML blocks
+├── /views/          → Role-based interfaces
 │   ├── /admin/
 │   ├── /comptable/
 │   └── /visiteur/
-├── /justificatif/   → Stockage des fichiers
+├── /justificatif/   → File storage
 ├── index.php
 └── bdd.php
