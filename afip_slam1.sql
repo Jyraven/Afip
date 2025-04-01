@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : sam. 29 mars 2025 à 10:51
+-- Généré le : mar. 01 avr. 2025 à 22:09
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -63,9 +63,11 @@ INSERT INTO `fiches` (`id_fiches`, `id_users`, `op_date`, `cl_date`, `status_id`
 (39, 5, '2025-03-26', NULL, 2, NULL, 0.00, 0.00),
 (40, 5, '2025-03-26', '2025-03-26', 4, 6, 26.00, 12.00),
 (41, 13, '2025-03-28', NULL, 2, NULL, 0.00, 0.00),
-(42, 13, '2025-03-28', '2025-03-28', 3, 14, 0.00, 0.00),
+(42, 13, '2025-03-28', '2025-03-28', 4, 14, 196.47, 161.28),
 (43, 13, '2025-03-28', NULL, 2, NULL, 0.00, 0.00),
-(44, 13, '2025-03-28', '2025-03-28', 1, NULL, 0.00, 0.00);
+(44, 13, '2025-03-28', '2025-03-28', 1, NULL, 0.00, 0.00),
+(45, 5, '2025-03-31', '2025-03-31', 3, 14, 0.00, 0.00),
+(46, 5, '2025-03-31', '2025-03-31', 1, NULL, 0.00, 0.00);
 
 -- --------------------------------------------------------
 
@@ -133,12 +135,18 @@ INSERT INTO `lignes_frais` (`id_lf`, `id_fiche`, `id_tf`, `quantité`, `total`, 
 (58, 40, 1, 4, 8, '2025-03-17', 'justificatif/67e45479d1235_IMG_1868.png', 0, 'non'),
 (59, 41, 2, 2, 11.32, '2025-03-27', 'justificatif/67e6091b18c35_t.pdf', NULL, NULL),
 (60, 41, 3, 2, 25, '2025-03-27', 'justificatif/67e6091b383d9_t.pdf', NULL, NULL),
-(61, 42, 1, 5, 132.5, '2025-03-18', 'justificatif/67e60984817d3_t.pdf', NULL, NULL),
-(62, 42, 2, 3, 28.78, '2025-03-24', 'justificatif/67e6098481a84_t.pdf', NULL, NULL),
-(63, 42, 4, 1, 35.19, '2025-03-07', 'justificatif/67e6098481c60_t.pdf', NULL, NULL),
+(61, 42, 1, 5, 132.5, '2025-03-18', 'justificatif/67e60984817d3_t.pdf', 1, NULL),
+(62, 42, 2, 3, 28.78, '2025-03-24', 'justificatif/67e6098481a84_t.pdf', 1, NULL),
+(63, 42, 4, 1, 35.19, '2025-03-07', 'justificatif/67e6098481c60_t.pdf', 0, 'Justificatif non valable'),
 (64, 43, 1, 1, 14.99, '2025-03-05', 'justificatif/67e609ae465a2_t.pdf', NULL, NULL),
 (65, 44, 2, 2, 11.32, '2025-03-27', 'justificatif/67e6091b18c35_t.pdf', NULL, NULL),
-(66, 44, 3, 2, 25, '2025-03-27', 'justificatif/67e6091b383d9_t.pdf', NULL, NULL);
+(66, 44, 3, 2, 25, '2025-03-27', 'justificatif/67e6091b383d9_t.pdf', NULL, NULL),
+(67, 45, 3, 5, 77.77, '2025-03-04', 'justificatif/67e17b9eafef8_t.pdf', NULL, NULL),
+(68, 45, 4, 3, 15, '2025-03-04', 'justificatif/67e17b9eb01e2_t.pdf', NULL, NULL),
+(69, 45, 2, 4, 40, '2025-03-04', 'justificatif/67e17b9eb61d3_t.pdf', NULL, NULL),
+(70, 46, 3, 5, 77.77, '2025-03-04', 'justificatif/67e17b9eafef8_t.pdf', NULL, NULL),
+(71, 46, 2, 4, 40, '2025-03-04', 'justificatif/67e17b9eb61d3_t.pdf', NULL, NULL),
+(72, 46, 1, 5, 33.33, '2025-03-12', 'justificatif/67e44fe1ae189_IMG_1868.png', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -283,13 +291,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT pour la table `fiches`
 --
 ALTER TABLE `fiches`
-  MODIFY `id_fiches` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id_fiches` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT pour la table `lignes_frais`
 --
 ALTER TABLE `lignes_frais`
-  MODIFY `id_lf` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `id_lf` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
 
 --
 -- AUTO_INCREMENT pour la table `roles`
